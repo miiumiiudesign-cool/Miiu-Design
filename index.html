@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Web, Print, and Ad Design | Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Desktop Left Navigation Rail -->
+    <nav class="desktop-nav" aria-label="Main navigation">
+        <button class="nav-btn" data-nav="home" data-active="true" aria-label="Home" aria-current="page">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span class="nav-tooltip">Home</span>
+        </button>
+        <button class="nav-btn" data-nav="about" aria-label="About Us">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <span class="nav-tooltip">About Us</span>
+        </button>
+        <button class="nav-btn" data-nav="contact" aria-label="Contact Us">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            <span class="nav-tooltip">Contact Us</span>
+        </button>
+    </nav>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav" aria-label="Main navigation">
+        <button class="nav-btn" data-nav="about" aria-label="About Us">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+        </button>
+        <button class="nav-btn" data-nav="home" data-active="true" aria-label="Home" aria-current="page">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </button>
+        <button class="nav-btn" data-nav="contact" aria-label="Contact Us">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero" aria-labelledby="hero-title">
+            <h1 id="hero-title">Expert Web, Print, and Ad Design.<br><span class="hero-break">That Grows Your Business</span></h1>
+            <h2 class="hero-subtitle">Web Design | Print Design | Advertising Design</h2>
+            <button class="cta-btn" onclick="scrollToContact()">Contact Us Now</button>
+        </section>
+
+        <!-- Category Filter Chips -->
+        <section class="filter-section" aria-label="Project categories">
+            <div class="filter-chips">
+                <button class="chip active" data-cat="all" aria-pressed="true">All</button>
+                <button class="chip" data-cat="web-design" aria-pressed="false">Web Design</button>
+                <button class="chip" data-cat="ai-project" aria-pressed="false">AI Project</button>
+                <button class="chip" data-cat="print-material" aria-pressed="false">Print Material</button>
+                <button class="chip" data-cat="branding" aria-pressed="false">Branding</button>
+                <button class="chip" data-cat="graphic-design" aria-pressed="false">Graphic Design</button>
+                <button class="chip" data-cat="magazine" aria-pressed="false">Magazine</button>
+            </div>
+        </section>
+
+        <!-- Masonry Grid -->
+        <section class="portfolio-grid" aria-label="Portfolio projects">
+            <div class="masonry-container">
+                <div class="card" data-cats="graphic-design,branding,print-material" data-id="p1" data-title="Membership Card Design" data-img="projects/membership-card-design/membership-card-design.jpg" data-client="TechCorp Inc." data-date="2024" aria-label="Project: Membership Card Design, tools: PS" tabindex="0">
+                    <img src="projects/membership-card-design/cover.jpeg" alt="Dual-phase membership card project was designed for Ottawazine" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Membership Card Design</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="digital-graphic,branding,soical-media-post,graphic-design" data-id="p2" data-title="Festival-Themed Graphic" data-img="projects/festival-themed-graphic/festival-themed-graphic.jpg" data-client="Global Ventures" data-date="2025" aria-label="Project: Festival-Themed Graphic, tools: AI" tabindex="0">
+                    <img src="projects/festival-themed-graphic/cover.jpg" alt="Corporate brochure design featuring elegant typography and brand colors" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Festival-Themed Graphic</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="graphic-design,branding" data-id="p3" data-title="AI Dashboard" data-img="projects/product-advertising-graphics/product-advertising-graphics.jpg" data-client="DataFlow Systems" data-date="2024" aria-label="Project: Product Advertising Graphics, tools: PS, AI, Blender" tabindex="0">
+                    <img src="projects/product-advertising-graphics/cover.jpg" alt="AI-powered dashboard interface with data visualization and machine learning insights" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Product Advertising Graphics</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="graphic-design,branding" data-id="p4" data-title="Brand Identity" data-img="https://picsum.photos/seed/branding/900/3000" data-client="Artisan Coffee Co." data-date="2023" aria-label="Project: Brand Identity, tools: PS" tabindex="0">
+                    <img src="https://picsum.photos/300/300?random=4" alt="Brand identity package including logo, business cards, and letterhead design" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Brand Identity</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="magazine,print-material" data-id="p5" data-title="Fashion Magazine" data-img="https://picsum.photos/seed/magazine/900/3000" data-client="Style Quarterly" data-date="2024" aria-label="Project: Fashion Magazine, tools: PS" tabindex="0">
+                    <img src="https://picsum.photos/300/450?random=5" alt="Fashion magazine layout with bold typography and striking photography" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Fashion Magazine</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="web-design" data-id="p6" data-title="Portfolio Website" data-img="https://picsum.photos/seed/portfolio/900/3000" data-client="Creative Studio" data-date="2023" aria-label="Project: Portfolio Website, tools: PS" tabindex="0">
+                    <img src="https://picsum.photos/300/280?random=6" alt="Responsive portfolio website showcasing creative work with smooth animations" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Portfolio Website</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="print-material,graphic-design" data-id="p7" data-title="Event Poster" data-img="https://picsum.photos/seed/poster/900/3000" data-client="Music Festival" data-date="2024" aria-label="Project: Event Poster, tools: PS" tabindex="0">
+                    <img src="https://picsum.photos/300/380?random=7" alt="Event poster design with vibrant colors and dynamic composition" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Event Poster</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="branding,graphic-design" data-id="p8" data-title="Restaurant Branding" data-img="https://picsum.photos/seed/restaurant/900/3000" data-client="Bella Vista" data-date="2023" aria-label="Project: Restaurant Branding, tools: PS" tabindex="0">
+                    <img src="https://picsum.photos/300/320?random=8" alt="Restaurant brand identity with menu design and signage concepts" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">Restaurant Branding</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="ai-project" data-id="p9" data-title="ML Visualization" data-img="https://picsum.photos/seed/visualization/900/3000" data-client="Research Labs" data-date="2024" aria-label="Project: ML Visualization, tools: PS" tabindex="0">
+                    <img src="https://picsum.photos/300/360?random=9" alt="Machine learning model visualization interface with interactive charts" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">ML Visualization</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+                <div class="card" data-cats="web-design,ai-project" data-id="p10" data-title="AI Chatbot Interface" data-img="https://picsum.photos/seed/chatbot/900/3000" data-client="Support Solutions" data-date="2024" aria-label="Project: AI Chatbot Interface, tools: PS" tabindex="0">
+                    <img src="https://picsum.photos/300/290?random=10" alt="AI chatbot interface design with conversational UI patterns" loading="lazy">
+                    <div class="overlay">
+                        <div class="title">AI Chatbot Interface</div>
+                    </div>
+                    <div class="flag" aria-hidden="true">
+                        <span class="flag-text">PS</span>
+                    </div>
+                </div>
+            </div>
+        <!-- Contact Anchor -->
+        <section id="contact" class="contact-placeholder">
+            <section class="modal-contact">
+                <div class="modal-contact-inner">
+                    <div class="contact-column contact-left">
+                        <div class="company-logo">
+                            <img src="Miu Design Logo.png" alt="Miiu Design - Expert web, print, and advertising design" />
+                        </div>
+                        <p class="company-description">Expert web, print, and advertising design focused on business growth. We create impactful visual solutions that elevate your brand and drive results.</p>
+                    </div>
+                    <div class="contact-column contact-middle">
+                        <h3>Address</h3>
+                        <p>Rua do Guimarães N.o 285<br>Cheong Sin Building 5th Floor MACAU</p>
+                    </div>
+                    <div class="contact-column contact-right">
+                        <h3>Contact Us</h3>
+                        <p>Email:<br>miiumiiudesign@gmail.com</p>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-backdrop" data-close="true"></div>
+        <div class="modal-frame" role="document" tabindex="-1">
+            <header class="modal-header">
+                <div class="modal-header-inner">
+                    <h2 class="modal-title"></h2>
+                    <div class="modal-flags">
+                        <div class="bubble-PS"><span class="bubble-text">PS</span></div>
+                        <div class="bubble-AI"><span class="bubble-text">AI</span></div>
+                    </div>
+                </div>
+                <button class="modal-close" aria-label="Close">×</button>
+            </header>
+            <div class="modal-content">
+                <figure class="project-figure">
+                    <img class="project-image" src="" alt="" loading="lazy" />
+                </figure>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

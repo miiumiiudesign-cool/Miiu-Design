@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle deep linking on page load
     handleDeepLinking();
+    
+    // Initialize first-flag-only display for Home cards
+    initializeCardFlagDisplay();
 });
 
 /**
@@ -125,6 +128,9 @@ function filterCards(cards, category) {
             }
         }
     });
+    
+    // Reapply first-flag-only display after filtering
+    applyFirstFlagOnly();
 }
 
 /**
@@ -222,6 +228,43 @@ window.addEventListener('resize', function() {
     }, 250);
 });
 
+/**
+ * Initialize first-flag-only display for Home page cards
+ */
+function initializeCardFlagDisplay() {
+    applyFirstFlagOnly();
+}
+
+/**
+ * Apply first-flag-only rule to all cards
+ * Shows only the first flag in each card, hides all others
+ */
+function applyFirstFlagOnly() {
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+        // Find all flag elements within this card
+        const flags = card.querySelectorAll('[class^="flag-"], [class*=" flag-"]');
+        
+        if (flags.length === 0) return;
+        
+        // Show first flag, hide all others
+        flags.forEach((flag, index) => {
+            if (index === 0) {
+                // First flag: ensure it's visible
+                flag.classList.remove('flag-hidden');
+                flag.removeAttribute('aria-hidden');
+                flag.setAttribute('tabindex', '0');
+            } else {
+                // Subsequent flags: hide them
+                flag.classList.add('flag-hidden');
+                flag.setAttribute('aria-hidden', 'true');
+                flag.setAttribute('tabindex', '-1');
+            }
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('project-modal');
     if (!modal) return;
@@ -231,12 +274,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const titleEl = modal.querySelector('.modal-title');
     const imgEl = modal.querySelector('.project-image');
     const closeBtn = modal.querySelector('.modal-close');
+    const modalFlags = modal.querySelector('.modal-flags');
+
+    // Tool mapping configuration
+    const toolConfig = {
+        'ps': {
+            class: 'bubble-PS',
+            ariaLabel: 'Photoshop',
+            label: 'PS',
+            isImage: false
+        },
+        'ai': {
+            class: 'bubble-AI',
+            ariaLabel: 'Illustrator',
+            label: 'AI',
+            isImage: false
+        },
+        'blender': {
+            class: 'bubble-blender',
+            ariaLabel: 'Blender',
+            label: '',
+            isImage: true
+        },
+        'figma': {
+            class: 'bubble-figma',
+            ariaLabel: 'Figma',
+            label: '',
+            isImage: true
+        },
+        'pr': {
+            class: 'bubble-PR',
+            ariaLabel: 'Premiere Pro',
+            label: 'PR',
+            isImage: false
+        }
+    };
+
+    /**
+     * Render bubbles dynamically based on tools array
+     * @param {string[]} tools - Array of tool keys (e.g., ['PS', 'AI'])
+     */
+    function renderBubbles(tools) {
+        if (!modalFlags) return;
+
+        // Clear existing bubbles
+        modalFlags.innerHTML = '';
+
+        // Render each tool bubble in order
+        tools.forEach(toolKey => {
+            const normalizedKey = toolKey.toLowerCase().trim();
+            const config = toolConfig[normalizedKey];
+
+            // Skip unknown tools
+            if (!config) return;
+
+            // Create bubble element
+            const bubble = document.createElement('div');
+            bubble.className = config.class;
+            bubble.setAttribute('aria-label', config.ariaLabel);
+
+            // Create inner label
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'bubble-text';
+
+            if (config.isImage) {
+                // For image-based bubbles (Blender, Figma)
+                labelSpan.setAttribute('role', 'img');
+                labelSpan.setAttribute('aria-label', config.ariaLabel);
+            } else {
+                // For text-based bubbles (PS, AI, PR)
+                labelSpan.textContent = config.label;
+            }
+
+            bubble.appendChild(labelSpan);
+            modalFlags.appendChild(bubble);
+        });
+    }
 
     // Open by card element (matches your card HTML)
     function openFromCard(card, pushHistory = true) {
         const id = card.getAttribute('data-id') || '';
         const title = card.getAttribute('data-title') || 'Project';
         const img = card.getAttribute('data-img') || card.querySelector('img')?.src || '';
+        const toolsAttr = card.getAttribute('data-tools') || '';
 
         if (titleEl) titleEl.textContent = title;
 
@@ -244,6 +364,10 @@ document.addEventListener('DOMContentLoaded', () => {
             imgEl.src = img || `https://picsum.photos/seed/${encodeURIComponent(id || 'long')}/900/3000`;
             imgEl.alt = title;
         }
+
+        // Parse and render tools
+        const tools = toolsAttr.split(',').map(t => t.trim()).filter(t => t);
+        renderBubbles(tools);
 
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';

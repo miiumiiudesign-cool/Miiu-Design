@@ -29,13 +29,13 @@
                 </svg>
                 <span class="nav-tooltip">Home</span>
             </button>
-            <button class="nav-btn" data-nav="about" aria-label="About Us">
+            <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='projects.html'" data-href="projects.html">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
                 </svg>
-                <span class="nav-tooltip">About Us</span>
+                <span class="nav-tooltip">Our Projects</span>
             </button>
-            <button class="nav-btn" data-nav="contact" aria-label="Contact Us">
+            <button class="nav-btn" data-nav="contact" aria-label="Contact Us" onclick="location.href='#contact'">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
@@ -52,9 +52,9 @@
 
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-nav" aria-label="Main navigation">
-        <button class="nav-btn" data-nav="about" aria-label="About Us">
+        <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='projects.html'" data-href="projects.html">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
             </svg>
         </button>
         <button class="nav-btn" data-nav="home" data-active="true" aria-label="Home" aria-current="page">
@@ -62,7 +62,7 @@
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
         </button>
-        <button class="nav-btn" data-nav="contact" aria-label="Contact Us">
+        <button class="nav-btn" data-nav="contact" aria-label="Contact Us" onclick="location.href='#contact'">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
             </svg>
@@ -106,6 +106,9 @@
                     </div>
                     <div class="case-study-content">
                         <h3 class="case-study-subtitle">Case Study #1 – ChatEverywhere Website</h3>
+                        <div class="case-study-logo">
+                            <img src="projects/chat-everywhere-logo.png" alt="ChatEverywhere Logo" loading="lazy">
+                        </div>
                         <p>ChatEverywhere is more than a language tool—it supports student‑centered, task‑based learning and makes classrooms more interactive.</p>
                         <p>We helped ChatEverywhere design and build a clear, modern website to showcase their web app, highlight key features, share weekly updates, and promote live webinars.</p>
                     </div>
@@ -115,6 +118,9 @@
                 <div class="case-study">
                     <div class="case-study-content">
                         <h3 class="case-study-subtitle">Case Study #2 – AI Conversation Robot for a Macau School</h3>
+                        <div class="case-study-logo">
+                            <img src="projects/ai-robot-logo.png" alt="AI Robot Logo" loading="lazy">
+                        </div>
                         <p>For a school in Macau, we designed the complete user flow for both the student and teacher portals of their AI conversation robot project.</p>
                         <p>Students can practice real‑life English in scenarios like grocery shopping or ordering at a restaurant, while teachers use their portal to customize different practice situations and manage learning content.</p>
                     </div>
@@ -130,6 +136,9 @@
                     </div>
                     <div class="case-study-content">
                         <h3 class="case-study-subtitle">Case Study #3 – AI Immigration Application Assistant</h3>
+                        <div class="case-study-logo">
+                            <img src="projects/immigration-assistant-logo.png" alt="Immigration Assistant Logo" loading="lazy">
+                        </div>
                         <p>We designed an AI‑powered web application that simplifies Canadian visa applications.</p>
                         <p>The system helps users automatically fill in required forms and generates a clear checklist of necessary documents, making the process faster, more accurate, and easier to understand.</p>
                     </div>
@@ -137,139 +146,14 @@
             </div>
         </section>
 
-        <!-- Category Filter Chips -->
-        <section class="filter-section" aria-label="Project categories">
-            <div class="filter-chips">
-                <button id="all" class="chip active" data-cat="all" aria-pressed="true">All</button>
-                <button id="IT-Company" class="chip" data-cat="IT-Company" aria-pressed="false">IT Company</button>
-                <!-- <button id="Others" class="chip" data-cat="Others" aria-pressed="false">Small Business</button> -->
-                <button id="Advertising-Agency" class="chip" data-cat="Advertising-Agency" aria-pressed="false">Advertising Agency</button>
-                <button id="School" class="chip" data-cat="School" aria-pressed="false">Educational Institution</button>
-                <button id="Restaurant" class="chip" data-cat="Restaurant" aria-pressed="false">Food Service Establishment</button>
+        <!-- Projects CTA Section -->
+        <section class="projects-cta" aria-labelledby="projects-cta-title">
+            <div class="section-content">
+                <h2 id="projects-cta-title" class="section-title">Explore Our Work</h2>
+                <p>Discover our portfolio of successful projects and see how we've helped businesses like yours achieve their goals through innovative design solutions.</p>
+                <a href="projects.html" class="cta-btn">View All Projects</a>
             </div>
         </section>
-
-        <!-- Masonry Grid -->
-        <section class="portfolio-grid" aria-label="Portfolio projects">
-            <div class="masonry-container">
-                <div class="card" data-cats="Advertising-Agency" data-id="p1" data-title="Membership Card Design" data-img="projects/membership-card-design/membership-card-design.jpg" data-client="TechCorp Inc." data-date="2024" data-tools="PS,AI" aria-label="Project: Membership Card Design, tools: Photoshop" tabindex="0">
-                    <img src="projects/membership-card-design/cover.jpeg" alt="Dual-phase membership card project was designed for Ottawazine" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Membership Card Design</div>
-                    </div>
-                    <div class="flag-PS" aria-label="Photoshop">
-                        <span class="flag-text">PS</span>
-                    </div>
-                </div>
-                <div class="card" data-cats="IT-Company" data-id="p2" data-title="Festival-Themed Graphic" data-img="projects/festival-themed-graphic/festival-themed-graphic.jpg" data-client="Global Ventures" data-date="2025" data-tools="AI,PS" aria-label="Project: Festival-Themed Graphic, tools: Illustrator" tabindex="0">
-                    <img src="projects/festival-themed-graphic/cover.jpg" alt="Corporate brochure design featuring elegant typography and brand colors" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Festival-Themed Graphic</div>
-                    </div>
-                    <div class="flag-AI" aria-label="Illustrator">
-                        <span class="flag-text">AI</span>
-                    </div>
-                </div>
-                <div class="card" data-cats="IT-Company" data-id="p3" data-title="AI Dashboard" data-img="projects/product-advertising-graphics/product-advertising-graphics.jpg" data-client="DataFlow Systems" data-date="2024" data-tools="blender,PS,AI" aria-label="Project: Product Advertising Graphics, tools: Blender" tabindex="0">
-                    <img src="projects/product-advertising-graphics/cover.jpg" alt="AI-powered dashboard interface with data visualization and machine learning insights" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Product Advertising Graphics</div>
-                    </div>
-                    <div class="flag-blender" aria-label="Blender">
-                        <span class="flag-text" role="img" aria-label="Blender"></span>
-                    </div>
-                </div>
-                <div class="card" data-cats="IT-Company" data-id="p4" data-title="Product 3D Animation" data-img="projects/3D-animation-product-page/3D-animation-product-page.jpg" data-client="IT-Company" data-date="2024" data-tools="PS,PP,figma,blender" aria-label="Project: Interactive 3D Animation Webstore, tools: Figma" tabindex="0">
-                    <img src="projects/3D-animation-product-page/cover.jpg" alt="Brand identity package including logo, business cards, and letterhead design" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Interactive 3D Animation Webstore</div>
-                    </div>
-                    <div class="flag-blender" aria-label="Blender">
-                        <span class="flag-text" role="img" aria-label="Blender"></span>
-                    </div>
-                </div>
-                <div class="card" data-cats="Advertising-Agency" data-id="p5" data-title="Ottawa Chinatown Night Market" data-img="projects/night-market/night-market.jpg" data-client="Advertising-Agency" data-date="2025" data-tools="PS,AI" aria-label="Project: Ottawa Chinatown Night Market Event Materials Design, tools: Photoshop, Illustrator" tabindex="0">
-                    <img src="projects/night-market/cover.jpg" alt="Ottawa Chinatown Night Market Event Materials Design" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Ottawa Chinatown Night Market</div>
-                    </div>
-                    <div class="flag-PS" aria-label="Photoshop">
-                        <span class="flag-text">PS</span>
-                    </div>
-                </div>
-                <div class="card" data-cats="Advertising-Agency" data-id="p6" data-title="Portfolio Website" data-img="projects/social-media-graphics/social-media-graphics.jpg" data-client="Advertising-Agency" data-date="2024" data-tools="PS,AI" aria-label="Project: Festival-Themed Advertising Graphics, tools: Photoshop, Illustrator" tabindex="0">
-                    <img src="projects/social-media-graphics/cover.jpg" alt="Festival-Themed Advertising Graphics" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Festival-Themed Advertising Graphics</div>
-                    </div>
-                    <div class="flag-PS" aria-label="Photoshop">
-                        <span class="flag-text">PS</span>
-                    </div>
-                    
-                </div>
-                <div class="card" data-cats="IT-Company" data-id="p7" data-title="E-Commerce online store" data-img="projects/E-Commerce-online-store/E-Commerce-online-store.jpg" data-client="IT-Company" data-date="2024" data-tools="PS,Figma,AI" aria-label="Project: E-Commerce online store, tools: Photoshop, Figma" tabindex="0">
-                    <img src="projects/E-Commerce-online-store/cpver.jpg" alt="E-Commerce online store" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">E-Commerce online store</div>
-                    </div>
-                    <div class="flag-figma" aria-label="Figma">
-                        <span class="flag-text" role="img" aria-label="Figma"></span>
-                    </div> 
-                </div>
-                <div class="card" data-cats="Small-Business" data-id="p8" data-title="Restaurant Branding" data-img="projects/AI-Immigration-webdesign/AI-Immigration-webdesign.jpg" data-client="Bella Vista" data-date="2024" data-tools="Figma,PS" aria-label="Project: AI Immigration Web App, tools: Photoshop, Figma" tabindex="0">
-                    <img src="projects/AI-Immigration-webdesign/cover.jpg" alt="AI Immigration Web App" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">AI Immigration Web App</div>
-                    </div>
-                    <div class="flag-figma" aria-label="Figma">
-                        <span class="flag-text" role="img" aria-label="Figma"></span>
-                    </div> 
-                </div>
-                <div class="card" data-cats="IT-Company" data-id="p9" data-title="ML Visualization" data-img="projects/WiFi-Management-Web-Application/WiFi-Management-Web-Application.jpg" data-client="Research Labs" data-date="2024" data-tools="Figma,PS" aria-label="Project: WiFi Management Web Application, tools: Photoshop, Figma" tabindex="0">
-                    <img src="projects/WiFi-Management-Web-Application/cover.jpg" alt="WiFi Management Web Application Design" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">WiFi Management Web Application</div>
-                    </div>
-                    <div class="flag-figma" aria-label="Figma">
-                        <span class="flag-text" role="img" aria-label="Figma"></span>
-                    </div> 
-                </div>
-                <div class="card" data-cats="IT-Company, Advertising-Agency" data-id="p10" data-title="AI Chatbot Interface" data-img="projects/Brochure-Design/Brochure-Design.jpg" data-client="Support Solutions" data-date="2025" data-tools="PS,AI" aria-label="Project: Brochure Design — Turning Complex Tech into Clear Value, tools: AI, Blender" tabindex="0">
-                    <img src="projects/Brochure-Design/cover.jpg" alt="Brochure Design — Turning Complex Tech into Clear Value" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Brochure Design</div>
-                    </div>
-                    <div class="flag-AI" aria-label="AI">
-                        <span class="flag-text">AI</span>
-                    </div>
-                </div>
-                <div class="card" data-cats="IT-Company, Advertising-Agency" data-id="p11" data-title="Trade Show Banner Design — Clear Message, Bold Impact" data-img="projects/tradeshow-banner/tradeshow-banner.jpg" data-client="IT-Company" data-date="2025" data-tools="AI" aria-label="Project: Trade Show Banner Design — Clear Message, Bold Impact, tools: AI" tabindex="0">
-                    <img src="projects/tradeshow-banner/cover.jpg" alt="Trade Show Banner Design — Clear Message, Bold Impact" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Trade Show Banner Design</div>
-                    </div>
-                    <div class="flag-AI" aria-label="AI">
-                        <span class="flag-text">AI</span>
-                    </div>
-                </div>
-                <div class="card" data-cats="IT-Company, Advertising-Agency" data-id="p12" data-title="Flyer Design — Clear Value, Quick Takeaway" data-img="projects/Flyer-Design/Flyer-Design.jpg" data-client="IT-Company" data-date="2025" data-tools="AI" aria-label="Project: Flyer Design — Clear Value, Quick Takeaway, tools: AI" tabindex="0">
-                    <img src="projects/Flyer-Design/cover.jpg" alt="Flyer Design — Clear Value, Quick Takeaway" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Flyer Design</div>
-                    </div>
-                    <div class="flag-AI" aria-label="AI">
-                        <span class="flag-text">AI</span>
-                    </div>
-                </div>
-                <div class="card" data-cats="Advertising-Agency" data-id="p13" data-title="Infographic Design — Data Made Clear, Story Made Memorable" data-img="projects/Infographic-Design/Infographic-Design.jpg" data-client="Advertising-Agency" data-date="2025" data-tools="AI" aria-label="Project: Flyer Design — Clear Value, Quick Takeaway, tools: AI" tabindex="0">
-                    <img src="projects/Infographic-Design/cover.jpg" alt="Infographic Design — Data Made Clear, Story Made Memorable" loading="lazy">
-                    <div class="overlay">
-                        <div class="title">Infographic Design</div>
-                    </div>
-                    <div class="flag-AI" aria-label="AI">
-                        <span class="flag-text">AI</span>
-                    </div>
-                </div>
             </div>
         <!-- Contact Anchor -->
         <section id="contact" class="contact-placeholder">

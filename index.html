@@ -52,17 +52,17 @@
 
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-nav" aria-label="Main navigation">
-        <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='projects/index.html'" data-href="projects/index.html">
+        <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='projects'" data-href="projects">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
             </svg>
         </button>
-        <button class="nav-btn" data-nav="home" data-active="true" aria-label="Home" onclick="location.href='index.html'" data-href="index.html">
+        <button class="nav-btn" data-nav="home" data-active="true" aria-label="Home" onclick="location.href='/'" data-href="/">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
         </button>
-        <button class="nav-btn" data-nav="contact" aria-label="Contact Us" onclick="location.href='contactus/index.html'" data-href="contactus/index.html">
+        <button class="nav-btn" data-nav="contact" aria-label="Contact Us" onclick="location.href='contactus'" data-href="contactus/index.html">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
             </svg>
@@ -150,7 +150,7 @@
         <!-- Projects CTA Section -->
         <section class="projects-cta" aria-labelledby="projects-cta-title">
             <div class="section-content">
-                <h2 id="projects-cta-title" class="section-title">Explore Our Work</h2>
+                <h2 id="projects-cta-title" class="section-title">Explore More of Our Work</h2>
                 <p>Discover our portfolio of successful projects and see how we've helped businesses like yours achieve their goals through innovative design solutions.</p>
                 <a href="projects.html" class="cta-btn">View All Projects</a>
             </div>
@@ -179,30 +179,7 @@
         </section>
     </main>
 
-    <!-- Project Modal -->
-    <div id="project-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
-        <div class="modal-backdrop" data-close="true"></div>
-        <div class="modal-frame" role="document" tabindex="-1">
-            <header class="modal-header">
-                <div class="modal-header-inner">
-                    <h2 class="modal-title"></h2>
-                    <div class="modal-flags">
-                        <div class="bubble-PS" aria-label="Photoshop"><span class="bubble-text">PS</span></div>
-                        <div class="bubble-AI" aria-label="Illustrator"><span class="bubble-text">AI</span></div>
-                        <div class="bubble-blender" aria-label="Blender"><span class="bubble-text" role="img" aria-label="Blender"></span></div>
-                        <div class="bubble-figma" aria-label="Figma"><span class="bubble-text" role="img" aria-label="Figma"></span></div>
-                        <div class="bubble-PR" aria-label="Premiere Pro"><span class="bubble-text">PR</span></div>
-                    </div>
-                </div>
-                <button class="modal-close" aria-label="Close">×</button>
-            </header>
-            <div class="modal-content">
-                <figure class="project-figure">
-                    <img class="project-image" src="" alt="" loading="lazy" />
-                </figure>
-            </div>
-        </div>
-    </div>
+
 
     <script src="script.js"></script>
 </body>

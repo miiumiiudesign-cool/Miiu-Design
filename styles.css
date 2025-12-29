@@ -997,6 +997,92 @@ body {
     }
 }
 
+/* Content Sections */
+.content-section {
+    padding: var(--spacing-2xl) 0;
+    background-color: var(--bg-primary);
+}
+
+.section-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--text-hero);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.3;
+}
+
+.section-body {
+    max-width: 800px;
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    line-height: 1.7;
+}
+
+.section-body p {
+    margin-bottom: var(--spacing-md);
+}
+
+/* Case Studies Section */
+.case-studies {
+    padding: var(--spacing-2xl) 0;
+    background-color: #f8fafc;
+}
+
+.case-study {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-2xl);
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.case-study-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.case-study-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.case-study:hover .case-study-image img {
+    transform: scale(1.03);
+}
+
+.case-study-content {
+    padding: var(--spacing-lg);
+}
+
+.case-study-subtitle {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.case-study p {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
 /* Responsive Breakpoints */
 
 /* Small screens (≥640px) */
@@ -1013,6 +1099,27 @@ body {
 
 /* Medium screens (≥768px) */
 @media (min-width: 768px) {
+    .case-study {
+        flex-direction: row;
+        max-height: 400px;
+    }
+    
+    .case-study-reverse {
+        flex-direction: row-reverse;
+    }
+    
+    .case-study-image {
+        width: 50%;
+        height: auto;
+    }
+    
+    .case-study-content {
+        width: 50%;
+        padding: var(--spacing-xl);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
     .masonry-container {
         columns: 3;
     }

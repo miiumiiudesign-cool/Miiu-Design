@@ -1114,7 +1114,7 @@ body {
 }
 
 .case-study-logo {
-    max-width: 120px;
+    max-width: 260px;
     height: 60px;
     margin: 0 0 var(--spacing-md) 0;
     display: flex;

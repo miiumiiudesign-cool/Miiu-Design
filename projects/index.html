@@ -211,7 +211,7 @@
                             </div>
                         </div>
                         <div class="card" data-cats="IT-Company" data-id="p7" data-title="E-Commerce online store" data-img="E-Commerce-online-store/E-Commerce-online-store.jpg" data-client="IT-Company" data-date="2024" data-tools="PS,Figma,AI" aria-label="Project: E-Commerce online store, tools: Photoshop, Figma" tabindex="0">
-                            <img src="E-Commerce-online-store/cpver.jpg" alt="E-Commerce online store" loading="lazy">
+                            <img src="E-Commerce-online-store/cover.jpg" alt="E-Commerce online store" loading="lazy">
                             <div class="overlay">
                                 <div class="title">E-Commerce online store</div>
                             </div>
@@ -278,7 +278,30 @@
             </div>
         </section>
     </main>
-
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-backdrop" data-close="true"></div>
+        <div class="modal-frame" role="document" tabindex="-1">
+            <header class="modal-header">
+                <div class="modal-header-inner">
+                    <h2 class="modal-title"></h2>
+                    <div class="modal-flags">
+                        <div class="bubble-PS" aria-label="Photoshop"><span class="bubble-text">PS</span></div>
+                        <div class="bubble-AI" aria-label="Illustrator"><span class="bubble-text">AI</span></div>
+                        <div class="bubble-blender" aria-label="Blender"><span class="bubble-text" role="img" aria-label="Blender"></span></div>
+                        <div class="bubble-figma" aria-label="Figma"><span class="bubble-text" role="img" aria-label="Figma"></span></div>
+                        <div class="bubble-PR" aria-label="Premiere Pro"><span class="bubble-text">PR</span></div>
+                    </div>
+                </div>
+                <button class="modal-close" aria-label="Close">×</button>
+            </header>
+            <div class="modal-content">
+                <figure class="project-figure">
+                    <img class="project-image" src="" alt="" loading="lazy" />
+                </figure>
+            </div>
+        </div>
+    </div>
     <!-- Scripts -->
     <script src="../script.js"></script>
     <script>

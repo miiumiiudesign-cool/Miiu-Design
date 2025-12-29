@@ -1001,12 +1001,16 @@ body {
 .content-section {
     padding: var(--spacing-2xl) 0;
     background-color: var(--bg-primary);
+    text-align: center;
 }
 
 .section-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .section-title {

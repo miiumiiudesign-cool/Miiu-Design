@@ -1034,7 +1034,7 @@ body {
 
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-xl);
     margin-top: var(--spacing-xl);
 }
@@ -1073,6 +1073,13 @@ body {
     font-size: 1rem;
     color: var(--text-secondary);
     margin: 0;
+}
+
+/* Tablet responsive adjustments */
+@media (max-width: 1024px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* Mobile responsive adjustments */

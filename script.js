@@ -5,18 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize category filtering
     initializeCategoryFiltering();
-    
-    // Initialize card overlay functionality
-    initializeCardOverlays();
-    
-    // Initialize project modal functionality
-    initializeProjectModal();
-    
-    // Handle deep linking on page load
-    handleDeepLinking();
-    
+
     // Initialize first-flag-only display for Home cards
     initializeCardFlagDisplay();
+
+    // Fade sections in as the user scrolls to them
+    initializeScrollReveal();
 });
 
 /**
@@ -243,8 +237,9 @@ function applyFirstFlagOnly() {
     const cards = document.querySelectorAll('.card');
     
     cards.forEach(card => {
-        // Find all flag elements within this card
-        const flags = card.querySelectorAll('[class^="flag-"], [class*=" flag-"]');
+        // Find all flag elements within this card (direct children only —
+        // avoids also matching the inner .flag-text label, which also starts with "flag-")
+        const flags = card.querySelectorAll(':scope > [class^="flag-"], :scope > [class*=" flag-"]');
         
         if (flags.length === 0) return;
         
@@ -263,6 +258,81 @@ function applyFirstFlagOnly() {
             }
         });
     });
+}
+
+/**
+ * Fade page sections in as they scroll into view.
+ * Skips the hero (which already has its own load-in animation) and the
+ * portfolio grid (whose cards manage their own inline show/hide styles
+ * during category filtering, which would conflict with a class-based fade).
+ */
+function initializeScrollReveal() {
+    const targets = document.querySelectorAll(
+        '.content-section, .featured-work, .case-study, .projects-cta, .contact-placeholder, .service-card, .team-card'
+    );
+
+    if (targets.length === 0) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+        // Show everything immediately — no animation to skip
+        return;
+    }
+
+    targets.forEach((el, index) => {
+        el.classList.add('reveal');
+        el.style.transitionDelay = `${(index % 4) * 60}ms`;
+    });
+
+    let pending = Array.from(targets);
+
+    function reveal(el) {
+        el.classList.add('reveal-visible');
+        pending = pending.filter(item => item !== el);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                observer.unobserve(entry.target);
+                reveal(entry.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    targets.forEach(el => observer.observe(el));
+
+    // Safety net: an instant scroll jump (anchor-link navigation, keyboard
+    // Home/End, or the browser restoring a scroll position on reload) can
+    // move past a target between rendered frames without the observer ever
+    // reporting it as intersecting, leaving it stuck at opacity 0 forever.
+    // A lightweight scroll check catches anything the observer missed.
+    let ticking = false;
+
+    function sweepPending() {
+        ticking = false;
+        if (pending.length === 0) {
+            window.removeEventListener('scroll', onScroll);
+            return;
+        }
+        pending.slice().forEach(el => {
+            if (el.getBoundingClientRect().top < window.innerHeight) {
+                observer.unobserve(el);
+                reveal(el);
+            }
+        });
+    }
+
+    function onScroll() {
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(sweepPending);
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    requestAnimationFrame(sweepPending);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

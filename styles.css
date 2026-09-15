@@ -68,6 +68,7 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -90,6 +91,7 @@ body {
     color: var(--text-primary);
     background-color: var(--bg-primary);
     padding-bottom: var(--mobile-nav-height);
+    overflow-x: hidden;
 }
 
 /* Focus Styles */
@@ -246,8 +248,8 @@ body {
     position: absolute;
     z-index: -1;
     border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.35;
+    filter: blur(50px);
+    opacity: 0.4;
     pointer-events: none;
 }
 
@@ -255,8 +257,8 @@ body {
 .projects-header::before {
     top: -120px;
     left: 50%;
-    width: 560px;
-    height: 360px;
+    width: 620px;
+    height: 420px;
     transform: translateX(-65%);
     background: radial-gradient(circle, var(--accent-color), transparent 70%);
 }
@@ -265,10 +267,37 @@ body {
 .projects-header::after {
     top: -60px;
     left: 50%;
-    width: 480px;
-    height: 320px;
+    width: 540px;
+    height: 380px;
     transform: translateX(15%);
     background: radial-gradient(circle, var(--primary-color), transparent 70%);
+}
+
+/* Homepage only: a bold, unmistakably-moving glow — big swings in position,
+   scale and opacity on a short cycle, rather than a slow ambient drift. */
+.hero::before {
+    animation: heroAuroraA 8s ease-in-out infinite;
+}
+
+.hero::after {
+    animation: heroAuroraB 9s ease-in-out infinite;
+}
+
+@keyframes heroAuroraA {
+    0%, 100% { transform: translateX(-65%) translateY(0) scale(1); opacity: 0.4; }
+    50% { transform: translateX(-30%) translateY(70px) scale(1.4); opacity: 0.75; }
+}
+
+@keyframes heroAuroraB {
+    0%, 100% { transform: translateX(15%) translateY(0) scale(1); opacity: 0.4; }
+    50% { transform: translateX(-20%) translateY(-60px) scale(1.35); opacity: 0.7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero::before,
+    .hero::after {
+        animation: none;
+    }
 }
 
 .hero-logo {
@@ -372,28 +401,28 @@ body {
     transform: translateY(-1px);
 }
 
-/* Hero entrance animation - subtle, respects reduced-motion via the global rule above */
+/* Hero entrance animation - respects reduced-motion via the global rule above */
 .hero-logo,
 .hero h1,
 .hero-subtitle,
 .trust-bar,
 .hero-actions {
-    animation: heroFadeUp 0.5s ease both;
+    animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.hero h1 { animation-delay: 0.06s; }
-.hero-subtitle { animation-delay: 0.12s; }
-.trust-bar { animation-delay: 0.18s; }
-.hero-actions { animation-delay: 0.24s; }
+.hero h1 { animation-delay: 0.08s; }
+.hero-subtitle { animation-delay: 0.16s; }
+.trust-bar { animation-delay: 0.24s; }
+.hero-actions { animation-delay: 0.32s; }
 
 @keyframes heroFadeUp {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px) scale(0.96);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 

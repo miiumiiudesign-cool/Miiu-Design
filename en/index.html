@@ -17,6 +17,9 @@
     <link rel="apple-touch-icon" href="Miiu-Design-Logo-blue-square.png">
     <link rel="canonical" href="https://miiudesign.com/">
     <title>MIIU DESIGN CO., LTD. | Expert Web, Print, and Ad Design | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -29,12 +32,14 @@
                 </svg>
                 <span class="nav-tooltip">Home</span>
             </button>
+            <!-- HIDDEN: Our Projects
             <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='projects/index.html'" data-href="projects/index.html">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
                 </svg>
                 <span class="nav-tooltip">Our Projects</span>
             </button>
+            -->
             <button class="nav-btn" data-nav="about" aria-label="About Us" onclick="location.href='about.html'" data-href="about.html">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -63,11 +68,13 @@
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
         </button>
+        <!-- HIDDEN: Our Projects
         <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='projects/index.html'" data-href="projects/index.html">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
             </svg>
         </button>
+        -->
         <button class="nav-btn" data-nav="home" data-active="true" aria-label="Home" onclick="location.href='index.html'" data-href="index.html">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
@@ -88,24 +95,84 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero" aria-labelledby="hero-title">
-            <img src="../Miu-Design-Logo.png" alt="Miiu Design Logo" class="hero-logo" />
-            <h1 id="hero-title">Expert Web, Print, and Ad Design.<br><span class="hero-break">That Grows Your Business</span></h1>
-            <h2 class="hero-subtitle">Web Design | Print Design | Advertising Design</h2>
-            <div class="trust-bar" aria-label="About us">
+        <section class="hero hero-home" aria-labelledby="hero-title">
+            <div class="hero-bg" aria-hidden="true"></div>
+            <div class="hero-topbar">
+                <img src="../Miu-Design-Logo.png" alt="Miiu Design Logo" class="hero-logo" />
+                <button class="hero-cta" onclick="scrollToContact()">
+                    <span class="hero-cta-icon" aria-hidden="true">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>
+                    </span>
+                    Contact Us Now
+                </button>
+            </div>
+            <div class="hero-badge" aria-label="About us">
+                <svg class="hero-badge-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+                </svg>
                 <span>Locally Based in Macau</span>
                 <span class="trust-divider" aria-hidden="true"></span>
                 <span>Founded in 2022</span>
-                <span class="trust-divider" aria-hidden="true"></span>
-                <span>20+ Completed Projects</span>
+                <span class="trust-divider hero-badge-extra" aria-hidden="true"></span>
+                <span class="hero-badge-extra">20+ Completed Projects</span>
             </div>
-            <div class="hero-actions">
-                <button class="cta-btn" onclick="scrollToContact()">Contact Us Now</button>
-                <a href="projects/index.html" class="cta-btn-secondary">View Our Portfolio</a>
+            <h1 id="hero-title">Expert Web, Print, and <span class="hero-accent">Ad Design.</span><br>That <span class="hero-accent hero-accent-blue">Grows Your Business.</span></h1>
+            <h2 class="hero-subtitle">Web Design | Print Design | Advertising Design</h2>
+
+            <!-- Case study cards: each links to its case in the Case Studies section below -->
+            <div class="hero-cards">
+                <a class="hero-card" href="#case-chateverywhere" style="--card-accent: #3b74d8; --tilt: -4deg; --lift: 10px;">
+                    <div class="hero-card-body">
+                        <div class="hero-card-meta">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6v2H8v2h8v-2h-2v-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/></svg>
+                            ChatEverywhere
+                        </div>
+                        <div class="hero-card-image"><img src="Case-Study/Thumb-nail.jpg" alt="ChatEverywhere website screenshot"></div>
+                        <h3 class="hero-card-title">ChatEverywhere Website</h3>
+                        <div class="hero-card-tags"><span>Web Design</span><span>Development</span></div>
+                    </div>
+                    <div class="hero-card-footer">Case Study #1</div>
+                </a>
+                <a class="hero-card" href="#case-ai-robot" style="--card-accent: #6c63e6; --tilt: 3deg; --lift: 0px;">
+                    <div class="hero-card-body">
+                        <div class="hero-card-meta">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
+                            Macau School
+                        </div>
+                        <div class="hero-card-image"><img src="Case-Study/澳門沙梨頭坊眾學校-AI對話機械人.jpg" alt="AI conversation robot interface"></div>
+                        <h3 class="hero-card-title">AI Conversation Robot</h3>
+                        <div class="hero-card-tags"><span>UI/UX</span><span>User Flows</span></div>
+                    </div>
+                    <div class="hero-card-footer">Case Study #2</div>
+                </a>
+                <a class="hero-card" href="#case-wall-art" style="--card-accent: #23879a; --tilt: -2deg; --lift: 6px;">
+                    <div class="hero-card-body">
+                        <div class="hero-card-meta">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37-1.34-1.34a.996.996 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96a.996.996 0 0 0 0-1.41z"/></svg>
+                            Primary School
+                        </div>
+                        <div class="hero-card-image"><img src="Case-Study/wall-art.jpg" alt="Primary school outdoor wall art"></div>
+                        <h3 class="hero-card-title">Outdoor Wall Art</h3>
+                        <div class="hero-card-tags"><span>Illustration</span><span>Mural</span></div>
+                    </div>
+                    <div class="hero-card-footer">Case Study #3</div>
+                </a>
+                <a class="hero-card" href="#case-marine-water" style="--card-accent: #0d5391; --tilt: 4deg; --lift: -4px;">
+                    <div class="hero-card-body">
+                        <div class="hero-card-meta">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/></svg>
+                            Marine &amp; Water Bureau
+                        </div>
+                        <div class="hero-card-image"><img src="Case-Study/水務局.jpg" alt="Marine and Water Bureau outdoor education boards"></div>
+                        <h3 class="hero-card-title">Water Education Boards</h3>
+                        <div class="hero-card-tags"><span>Info Design</span><span>Signage</span></div>
+                    </div>
+                    <div class="hero-card-footer">Coming Soon</div>
+                </a>
             </div>
         </section>
 
-        <!-- Featured Work Section -->
+        <!-- HIDDEN: Featured Work Section (part 1 of 2; the Our Projects comment below sits in the middle)
         <section class="featured-work" aria-labelledby="featured-work-title">
             <div class="section-content">
                 <h2 id="featured-work-title" class="section-title">Featured Work</h2>
@@ -184,9 +251,14 @@
                         </div>
                     </div>
                 </div>
+        -->
+                <!-- HIDDEN: Our Projects
                 <a href="projects/index.html" class="cta-btn-secondary view-all-link">View Full Portfolio</a>
+                -->
+        <!-- HIDDEN: Featured Work Section (part 2 of 2)
             </div>
         </section>
+        -->
 
         <!-- Intro Section -->
         <section class="content-section" aria-labelledby="intro-title">
@@ -204,7 +276,7 @@
                 <h2 id="case-studies-title" class="section-title">Success Stories to Inspire</h2>
                 
                 <!-- Case Study 1 -->
-                <div class="case-study">
+                <div class="case-study" id="case-chateverywhere">
                     <div class="case-study-image">
                         <a href="https://intro.chateverywhere.app/zh/" target="_blank">
                         <img src="Case-Study/Thumb-nail.jpg" alt="ChatEverywhere Website Screenshot" loading="lazy">
@@ -223,7 +295,7 @@
                 </div>
 
                 <!-- Case Study 2 -->
-                <div class="case-study">
+                <div class="case-study" id="case-ai-robot">
                     <div class="case-study-content">
                         <!-- <div class="case-study-logo">
                             <img src="logo/澳門沙梨頭坊眾學校.jpg" alt="AI Robot Logo" loading="lazy">
@@ -257,7 +329,7 @@
                 </div> -->
                 
                 <!-- Case Study 3-1 -->
-                <div class="case-study">
+                <div class="case-study" id="case-wall-art">
                     <div class="case-study-image">
                         <img src="Case-Study/wall-art.jpg" alt="PV Primary School Wall Art" loading="lazy">
                     </div>
@@ -271,7 +343,7 @@
                 </div>
 
                 <h2 id="upcoming-projects-title" class="section-title">Coming Soon</h2>
-                <div class="case-study">
+                <div class="case-study" id="case-marine-water">
                     <div class="case-study-image">
                         <img src="Case-Study/水務局.jpg" alt="Marine and Water Bureau of Macau Educational Board" loading="lazy">
                     </div>
@@ -286,7 +358,7 @@
             </div>
         </section>
 
-        <!-- Projects CTA Section -->
+        <!-- HIDDEN: Our Projects (Projects CTA Section)
         <section class="projects-cta" aria-labelledby="projects-cta-title">
             <div class="section-content">
                 <h2 id="projects-cta-title" class="section-title">Explore More of Our Work</h2>
@@ -294,6 +366,7 @@
                 <a href="projects/index.html" class="cta-btn">View All Projects</a>
             </div>
         </section>
+        -->
         <!-- Contact Anchor -->
         <section id="contact" class="contact-placeholder" style="background-color: #f8fafc; padding: var(--spacing-2xl) 0;">
             <div class="section-content" style="max-width: 1000px; margin: 0 auto; padding: 0 var(--spacing-lg);">

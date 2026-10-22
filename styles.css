@@ -426,7 +426,7 @@ body {
     }
 }
 
-/* Homepage hero - airy sky-blue backdrop, pill badge, serif accents and
+/* Homepage hero - airy sky-blue backdrop, pill badge, accent headline and
    a fan of tilted case study cards. Scoped to .hero-home so the About and
    Contact pages keep the shared .hero styles above. */
 .hero-home {
@@ -564,20 +564,14 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
+/* Accent words keep the site font; English gets an italic, CJK stays upright */
 .hero-accent {
-    font-family: 'Instrument Serif', 'Songti TC', 'Noto Serif TC', 'PMingLiU', serif;
-    font-size: 1.1em;
     font-style: italic;
-    font-weight: 400;
-    letter-spacing: 0;
     padding-right: 0.06em;
 }
 
-/* CJK has no true italic - use an upright, heavier serif instead */
 .hero-accent:lang(zh) {
-    font-size: 1em;
     font-style: normal;
-    font-weight: 600;
     white-space: nowrap;
 }
 

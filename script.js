@@ -11,7 +11,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fade sections in as the user scrolls to them
     initializeScrollReveal();
+
+    // Start the homepage hero's right-to-left case study carousel
+    initializeHeroCarousel();
 });
+
+/**
+ * Duplicate the hero cards once so the CSS marquee (which slides the track
+ * by exactly half its width) loops without a gap. The copies are hidden
+ * from screen readers and the tab order. With reduced motion the row stays
+ * still and can be scrolled sideways instead.
+ */
+function initializeHeroCarousel() {
+    const track = document.querySelector('.hero-cards');
+    if (!track) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    Array.from(track.children).forEach(card => {
+        const copy = card.cloneNode(true);
+        copy.setAttribute('aria-hidden', 'true');
+        copy.setAttribute('tabindex', '-1');
+        copy.querySelectorAll('img').forEach(img => { img.alt = ''; });
+        track.appendChild(copy);
+    });
+
+    track.classList.add('is-looping');
+}
 
 /**
  * Initialize navigation functionality

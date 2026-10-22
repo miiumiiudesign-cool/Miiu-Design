@@ -20,6 +20,7 @@
     --spacing-xl: 2rem;
     --spacing-2xl: 3rem;
     --nav-rail-width: 72px;
+    --nav-edge: 32px;
     --mobile-nav-height: 64px;
     --modal-dim: rgba(0, 0, 0, 0.55);
     --header-height: 64px;
@@ -100,21 +101,48 @@ body {
     outline-offset: 2px;
 }
 
-/* Desktop Navigation Rail */
+/* Desktop Navigation Rail - no panel of its own: it floats over the page
+   and shares whatever background is behind it. The buttons sit
+   --nav-edge in from the left (the corner logo lines up with them); the
+   rail can reach into the content's side padding, so it ignores clicks
+   everywhere except on the buttons themselves. */
 .desktop-nav {
     position: fixed;
     top: 0;
     left: 0;
-    width: var(--nav-rail-width);
+    width: calc(var(--nav-edge) + 48px);
     height: 100vh;
-    background-color: var(--bg-primary);
-    box-shadow: 1px 0 0 var(--border-color), 4px 0 16px rgba(13, 83, 145, 0.06);
+    background-color: transparent;
     display: none;
     flex-direction: column-reverse;
     justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-lg) 0;
+    align-items: flex-start;
+    padding: var(--spacing-lg) 0 var(--spacing-lg) var(--nav-edge);
     z-index: 100;
+    pointer-events: none;
+}
+
+.desktop-nav .nav-btn {
+    pointer-events: auto;
+}
+
+/* Logo at the top of the rail, lined up with the buttons; the rail is
+   fixed, so it stays in place while the page scrolls. Its top matches the
+   homepage hero's first row. */
+.nav-logo {
+    position: absolute;
+    top: calc(var(--spacing-xl) + var(--spacing-sm));
+    left: var(--nav-edge);
+    /* Smaller on tablets so it stays clear of the content's narrower margin */
+    height: 46px;
+    width: auto;
+}
+
+@media (min-width: 1024px) {
+    .nav-logo {
+        top: calc(var(--spacing-2xl) + var(--spacing-sm));
+        height: 56px;
+    }
 }
 
 .nav-center-group {
@@ -457,6 +485,14 @@ body {
     pointer-events: none;
 }
 
+/* With the side nav (≥768px) the content is centred in the space right of
+   the rail, so shift the backdrop back by half the rail to reach x = 0 */
+@media (min-width: 768px) {
+    .hero-home .hero-bg {
+        transform: translateX(calc(-50% - var(--nav-rail-width) / 2));
+    }
+}
+
 /* Blue glow pooling behind the cards */
 .hero-home .hero-bg::after {
     content: "";
@@ -476,52 +512,30 @@ body {
     50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
 }
 
+/* Empty row at the top of the hero that the corner logo sits in */
 .hero-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-md);
+    --logo-h: 60px;
+    min-height: calc(var(--logo-h) + var(--spacing-sm));
     padding-top: var(--spacing-sm);
     margin-bottom: clamp(2rem, 6vw, 4rem);
 }
 
-.hero-home .hero-logo {
+/* Homepage logo in the page's top-left corner, for phones only - from
+   768px up the logo lives in the fixed side nav instead (.nav-logo) */
+.page-logo {
+    position: absolute;
+    z-index: 101;
+    top: calc(var(--spacing-lg) + var(--spacing-sm));
+    left: var(--spacing-lg);
     height: 60px;
     width: auto;
-    max-width: none;
-    margin: 0;
+    animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.hero-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 20px 6px 6px;
-    border: none;
-    border-radius: 999px;
-    background: #0b1726;
-    color: #fff;
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(11, 23, 38, 0.25);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.hero-cta:hover,
-.hero-cta:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(11, 23, 38, 0.32);
-}
-
-.hero-cta-icon {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.14);
+@media (min-width: 768px) {
+    .page-logo {
+        display: none;
+    }
 }
 
 .hero-badge {
@@ -553,179 +567,274 @@ body {
     background: var(--border-color);
 }
 
-.hero-home h1 {
-    font-size: clamp(2.1rem, 5.2vw, 3.75rem);
-    font-weight: 500;
-    line-height: 1.18;
-    letter-spacing: -0.025em;
-    color: #0b0f19;
-    background: none;
-    -webkit-text-fill-color: currentColor;
-    margin-bottom: var(--spacing-md);
-}
-
-/* Accent words keep the site font; English gets an italic, CJK stays upright */
+/* The headline and subtitle use the shared .hero type, exactly as on the
+   About Us page. The key Chinese phrases just shouldn't break across lines
+   on phones. */
 .hero-accent {
-    font-style: italic;
-    padding-right: 0.06em;
-}
-
-.hero-accent:lang(zh) {
-    font-style: normal;
     white-space: nowrap;
 }
 
-.hero-accent-blue {
-    background: linear-gradient(90deg, #2563c9, #4f8fea);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 .hero-home .hero-subtitle {
-    color: #5b6472;
-    font-size: clamp(1rem, 1.6vw, 1.15rem);
-    font-weight: 400;
-    letter-spacing: 0.02em;
     margin-bottom: 0;
 }
 
-/* Case study cards */
-.hero-cards {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 14px;
-    max-width: 560px;
-    margin: var(--spacing-2xl) auto 0;
+/* Case study carousel - a full-width strip whose cards drift from right to
+   left and fade in and out at both edges of the page. It pauses while the
+   pointer is over it so a card can be hovered and clicked. */
+.hero-carousel {
+    --card-w: 180px;
+    --card-h: 236px;
+    --card-gap: 32px;
+    --tab-h: 22px;
+    --notch-w: 50px;
+    --marquee-duration: 42s;
+    /* Break out of .main-content to span the whole window */
+    width: 100vw;
+    margin: var(--spacing-md) 0 calc(var(--spacing-lg) * -1 - 60px) calc(50% - 50vw);
+    /* Room above and below for the tilt, the hover lift and the soft card
+       shadows (up to ~70px below a hovered card), so the clipping edge never
+       cuts a shadow off in a visible line. The extra 60px at the bottom is
+       taken back by the negative margin, so the layout doesn't move. */
+    padding: 40px 0 100px;
+    overflow: hidden;
+    /* The empty padding overlaps the next section - let clicks through */
+    pointer-events: none;
+    /* Fully clear for --fade-clear at each side (so cards are gone before
+       they reach the nav icons), then fade in over the next stretch */
+    --fade-clear: 0px;
+    --carousel-fade: linear-gradient(to right,
+        transparent var(--fade-clear), #000 18%,
+        #000 82%, transparent calc(100% - var(--fade-clear)));
+    -webkit-mask-image: var(--carousel-fade);
+    mask-image: var(--carousel-fade);
+    animation: heroCarouselIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s backwards;
 }
 
+/* With the side nav the hero is centred right of the rail, so pull the
+   strip back by half the rail to reach the window's left edge */
+@media (min-width: 768px) {
+    .hero-carousel {
+        margin-left: calc(50% - 50vw - var(--nav-rail-width) / 2);
+        --fade-clear: calc(var(--nav-edge) + 56px);
+    }
+}
+
+/* The moving track; script.js appends a copy of the cards and adds
+   .is-looping, so sliding by exactly half its width loops seamlessly */
+.hero-cards {
+    display: flex;
+    width: max-content;
+}
+
+.hero-cards.is-looping {
+    animation: heroMarquee var(--marquee-duration) linear infinite;
+}
+
+.hero-carousel:hover .hero-cards,
+.hero-carousel:focus-within .hero-cards {
+    animation-play-state: paused;
+}
+
+.hero-carousel .hero-card {
+    pointer-events: auto;
+}
+
+@keyframes heroMarquee {
+    to { transform: translateX(-50%); }
+}
+
+/* Card - white with an inset image and a notched panel. The height is
+   fixed, so on hover the image shrinks while the description and tags open
+   up underneath the title. Spacing is a right margin rather than a flex gap
+   so each card + gap is the same width and the half-way loop point lines up. */
 .hero-card {
     position: relative;
     z-index: 0;
     display: flex;
+    flex: 0 0 var(--card-w);
     flex-direction: column;
-    padding: 5px 5px 0;
-    border-radius: 18px;
-    background: var(--card-accent);
-    background: linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 70%, white), var(--card-accent));
+    height: var(--card-h);
+    margin-right: var(--card-gap);
+    padding: 6px;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #fff;
     box-shadow:
-        0 18px 40px -14px color-mix(in srgb, var(--card-accent) 60%, transparent),
-        0 2px 6px rgba(15, 23, 42, 0.08);
+        0 20px 40px -18px rgba(13, 40, 90, 0.35),
+        0 2px 6px rgba(15, 23, 42, 0.06);
     color: inherit;
     text-align: left;
     text-decoration: none;
     rotate: calc(var(--tilt) * 0.5);
     translate: 0 calc(var(--lift) * 0.5);
     transition: rotate 0.35s ease, scale 0.35s ease, translate 0.35s ease, box-shadow 0.35s ease;
-    animation: heroCardIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
-
-.hero-card:nth-child(1) { animation-delay: 0.35s; }
-.hero-card:nth-child(2) { animation-delay: 0.45s; }
-.hero-card:nth-child(3) { animation-delay: 0.55s; }
-.hero-card:nth-child(4) { animation-delay: 0.65s; }
 
 .hero-card:hover,
 .hero-card:focus-visible {
     z-index: 2;
     rotate: 0deg;
-    scale: 1.1;
+    scale: 1.08;
     translate: 0 -8px;
     box-shadow:
-        0 28px 56px -16px color-mix(in srgb, var(--card-accent) 70%, transparent),
-        0 4px 12px rgba(15, 23, 42, 0.12);
+        0 30px 60px -20px rgba(13, 40, 90, 0.45),
+        0 4px 12px rgba(15, 23, 42, 0.1);
 }
 
-.hero-card-body {
-    flex: 1;
+.hero-card-media {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 56px;
+    border-radius: 19px 19px 0 0;
+    overflow: hidden;
+    background: var(--bg-secondary);
+}
+
+.hero-card-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.hero-card:hover .hero-card-media img,
+.hero-card:focus-visible .hero-card-media img {
+    transform: scale(1.05);
+}
+
+/* White panel overlapping the image. Its top steps down on the right:
+   ::before is the raised tab on the left, ::after the concave curve
+   where the tab meets the lower step.
+   The tab and curve overlap the panel by 1px, and the panel carries a 1px
+   white edge on the left, so the tilted (anti-aliased) card shows no hairline
+   of the image through the seams. */
+.hero-card-panel {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 10px;
-    border-radius: 14px;
+    margin-top: -14px;
+    padding: 0 8px 4px;
+    border-top-right-radius: 14px;
     background: #fff;
+    box-shadow: -1px 0 0 #fff;
 }
 
+.hero-card-panel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: calc(100% - 1px);
+    width: calc(100% - var(--notch-w));
+    height: calc(var(--tab-h) + 1px);
+    border-radius: 16px 16px 0 0;
+    background: #fff;
+    box-shadow: -1px 0 0 #fff;
+}
+
+.hero-card-panel::after {
+    content: "";
+    position: absolute;
+    left: calc(100% - var(--notch-w));
+    bottom: calc(100% - 1px);
+    width: 14px;
+    height: 15px;
+    background: radial-gradient(circle at 100% 0, transparent 13.5px, #fff 14px);
+}
+
+/* Sits up in the raised tab, above the step */
 .hero-card-meta {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--card-accent);
-    font-size: 0.72rem;
-    font-weight: 600;
+    margin-top: calc(var(--tab-h) * -1 + 6px);
+    padding-right: var(--notch-w);
+    color: #6b7280;
+    font-size: 0.7rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.hero-card-meta svg {
+.hero-card-dot {
     flex-shrink: 0;
-}
-
-.hero-card-image {
-    aspect-ratio: 16 / 10;
-    border-radius: 10px;
-    overflow: hidden;
-    background: var(--bg-secondary);
-}
-
-.hero-card-image img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-
-.hero-card:hover .hero-card-image img {
-    transform: scale(1.05);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #c4cad3;
 }
 
 .hero-card-title {
+    margin-top: 6px;
     color: #0b0f19;
     font-size: 0.9rem;
     font-weight: 600;
     line-height: 1.3;
 }
 
+/* Only shown on hover, above the description it introduces; while hidden
+   it keeps just a little space under the title */
+.hero-card-divider {
+    margin: 6px 0 0;
+    border: 0;
+    border-top: 1px solid #e6e9ee;
+    opacity: 0;
+    transition: opacity 0.3s ease, margin 0.4s ease;
+}
+
+.hero-card:hover .hero-card-divider,
+.hero-card:focus-visible .hero-card-divider {
+    margin: 10px 0;
+    opacity: 1;
+}
+
+.hero-card-reveal {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin-bottom 0.4s ease;
+}
+
+.hero-card:hover .hero-card-reveal,
+.hero-card:focus-visible .hero-card-reveal {
+    max-height: 9rem;
+    opacity: 1;
+    margin-bottom: 2px;
+}
+
+.hero-card-desc {
+    margin-bottom: 8px;
+    color: #5b6472;
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
 .hero-card-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin-top: auto;
 }
 
 .hero-card-tags span {
-    padding: 2px 8px;
-    border: 1px solid #d5dde8;
+    padding: 2px 9px;
+    border: 1px solid #e3e7ed;
     border-radius: 999px;
     color: #3d4756;
     font-size: 0.68rem;
     white-space: nowrap;
 }
 
-.hero-card-footer {
-    padding: 7px 0 8px;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    text-align: center;
-}
-
-.hero-card-footer::after {
-    content: " →";
-}
 
 /* Entrance animation for the new hero pieces */
-.hero-home .hero-cta,
 .hero-badge {
     animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero-badge { animation-delay: 0.04s; }
 
-@keyframes heroCardIn {
+@keyframes heroCarouselIn {
     from {
         opacity: 0;
         transform: translateY(40px);
@@ -750,29 +859,30 @@ body {
         display: none;
     }
 
-    .hero-home .hero-logo {
+    .hero-card-dot,
+    .hero-card-status {
+        display: none;
+    }
+
+    .hero-topbar {
+        --logo-h: 36px;
+    }
+
+    .page-logo {
         height: 36px;
-    }
-
-    .hero-cta {
-        padding: 5px 14px 5px 5px;
-        font-size: 0.85rem;
-    }
-
-    .hero-cta-icon {
-        width: 28px;
-        height: 28px;
     }
 }
 
-/* Wide screens: one fanned row of four cards */
-@media (min-width: 1100px) {
-    .hero-cards {
-        grid-template-columns: repeat(4, 220px);
-        justify-content: center;
-        gap: 22px;
-        max-width: none;
-        margin-top: 3.5rem;
+/* Tablets and up: larger cards, wider gaps, full tilt */
+@media (min-width: 768px) {
+    .hero-carousel {
+        --card-w: 220px;
+        --card-h: 252px;
+        --card-gap: 48px;
+        --tab-h: 26px;
+        --notch-w: 58px;
+        --marquee-duration: 54s;
+        margin-top: var(--spacing-xl);
     }
 
     .hero-card {
@@ -780,25 +890,37 @@ body {
         translate: 0 var(--lift);
     }
 
-    .hero-card-body {
-        padding: 12px;
+    .hero-card-panel {
+        padding: 0 10px 4px;
+    }
+
+    .hero-card-meta {
+        font-size: 0.75rem;
     }
 
     .hero-card-title {
-        font-size: 1rem;
+        font-size: 1.05rem;
     }
 }
 
 @media (min-width: 1280px) {
-    .hero-cards {
-        grid-template-columns: repeat(4, 245px);
-        gap: 26px;
+    .hero-carousel {
+        --card-w: 245px;
+        --card-h: 266px;
+        --card-gap: 56px;
+        --marquee-duration: 60s;
     }
 }
 
+/* Reduced motion: no drifting (script.js skips the copies too) - the row
+   stays still and can be scrolled sideways instead */
 @media (prefers-reduced-motion: reduce) {
     .hero-home .hero-bg::after {
         animation: none;
+    }
+
+    .hero-carousel {
+        overflow-x: auto;
     }
 
     .hero-card {

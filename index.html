@@ -22,6 +22,8 @@
 <body>
     <!-- Desktop Left Navigation Rail -->
     <nav class="desktop-nav" aria-label="Main navigation">
+        <!-- Company logo: part of the fixed rail, so it stays put while the page scrolls -->
+        <img src="Miu-Design-Logo.png" alt="Miiu Design Logo" class="nav-logo" />
         <div class="nav-center-group">
             <button class="nav-btn" data-nav="home" data-active="true" aria-label="Home" onclick="location.href='index.html'" data-href="index.html">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -89,20 +91,16 @@
         </button>
     </nav>
 
+    <!-- Company logo, pinned to the top-left corner of the page -->
+    <img src="Miu-Design-Logo.png" alt="Miiu Design Logo" class="page-logo" />
+
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
         <section class="hero hero-home" aria-labelledby="hero-title">
             <div class="hero-bg" aria-hidden="true"></div>
-            <div class="hero-topbar">
-                <img src="Miu-Design-Logo.png" alt="Miiu Design Logo" class="hero-logo" />
-                <button class="hero-cta" onclick="scrollToContact()">
-                    <span class="hero-cta-icon" aria-hidden="true">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>
-                    </span>
-                    立即聯絡我們
-                </button>
-            </div>
+            <!-- Empty row that keeps space for the corner logo -->
+            <div class="hero-topbar" aria-hidden="true"></div>
             <div class="hero-badge" aria-label="關於我們">
                 <svg class="hero-badge-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
@@ -113,60 +111,113 @@
                 <span class="trust-divider hero-badge-extra" aria-hidden="true"></span>
                 <span class="hero-badge-extra">20+ 件完成專案</span>
             </div>
-            <h1 id="hero-title" lang="zh-Hant">專業網頁、印刷與<span class="hero-accent">廣告設計</span><br>幫助你的公司<span class="hero-accent hero-accent-blue">成長</span></h1>
+            <h1 id="hero-title">專業網頁、印刷與<span class="hero-accent">廣告設計</span><br>幫助你的公司<span class="hero-accent">成長</span></h1>
             <h2 class="hero-subtitle">網站設計｜平面設計｜廣告設計</h2>
 
-            <!-- Case study cards: each links to its case in the Case Studies section below -->
-            <div class="hero-cards">
-                <a class="hero-card" href="#case-chateverywhere" style="--card-accent: #3b74d8; --tilt: -4deg; --lift: 10px;">
-                    <div class="hero-card-body">
-                        <div class="hero-card-meta">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6v2H8v2h8v-2h-2v-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/></svg>
-                            ChatEverywhere
+            <!-- Case study carousel: each card links to its case in the Case Studies section below;
+                 script.js clones the cards once so the right-to-left loop is seamless -->
+            <div class="hero-carousel">
+                <div class="hero-cards">
+                    <a class="hero-card" href="#case-chateverywhere" style="--card-accent: #3b74d8; --tilt: -4deg; --lift: 10px;">
+                        <div class="hero-card-media"><img src="Case-Study/Thumb-nail.jpg" alt="ChatEverywhere 官方網站截圖"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">案例研究 #1<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">已完成</span></p>
+                            <h3 class="hero-card-title">ChatEverywhere 官方網站</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">為 ChatEverywhere 設計並建置清晰、現代的官網，展示產品功能、每週更新與線上講座。</p>
+                                <div class="hero-card-tags"><span>網站設計</span><span>網站開發</span></div>
+                            </div>
                         </div>
-                        <div class="hero-card-image"><img src="Case-Study/Thumb-nail.jpg" alt="ChatEverywhere 官方網站截圖"></div>
-                        <h3 class="hero-card-title">ChatEverywhere 官方網站</h3>
-                        <div class="hero-card-tags"><span>網站設計</span><span>網站開發</span></div>
-                    </div>
-                    <div class="hero-card-footer">案例研究 #1</div>
-                </a>
-                <a class="hero-card" href="#case-ai-robot" style="--card-accent: #6c63e6; --tilt: 3deg; --lift: 0px;">
-                    <div class="hero-card-body">
-                        <div class="hero-card-meta">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
-                            澳門學校
+                    </a>
+                    <a class="hero-card" href="#case-ai-robot" style="--card-accent: #6c63e6; --tilt: 3deg; --lift: 0px;">
+                        <div class="hero-card-media"><img src="Case-Study/澳門沙梨頭坊眾學校-AI對話機械人.jpg" alt="AI對話機器人介面"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">案例研究 #2<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">已完成</span></p>
+                            <h3 class="hero-card-title">AI對話機器人</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">為學生與老師端設計完整使用流程，讓學生在超市、餐廳等真實情境中練習英語。</p>
+                                <div class="hero-card-tags"><span>UI/UX</span><span>使用者流程</span></div>
+                            </div>
                         </div>
-                        <div class="hero-card-image"><img src="Case-Study/澳門沙梨頭坊眾學校-AI對話機械人.jpg" alt="AI對話機器人介面"></div>
-                        <h3 class="hero-card-title">AI對話機器人</h3>
-                        <div class="hero-card-tags"><span>UI/UX</span><span>使用者流程</span></div>
-                    </div>
-                    <div class="hero-card-footer">案例研究 #2</div>
-                </a>
-                <a class="hero-card" href="#case-wall-art" style="--card-accent: #23879a; --tilt: -2deg; --lift: 6px;">
-                    <div class="hero-card-body">
-                        <div class="hero-card-meta">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37-1.34-1.34a.996.996 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96a.996.996 0 0 0 0-1.41z"/></svg>
-                            小學校園
+                    </a>
+                    <a class="hero-card" href="#case-wall-art" style="--card-accent: #23879a; --tilt: -2deg; --lift: 6px;">
+                        <div class="hero-card-media"><img src="Case-Study/wall-art.jpg" alt="小學戶外牆面藝術"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">案例研究 #3<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">已完成</span></p>
+                            <h3 class="hero-card-title">戶外牆面藝術</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">把單調的校園外牆變成色彩豐富、充滿歡迎感的空間，風格活潑、易於小朋友理解。</p>
+                                <div class="hero-card-tags"><span>插畫</span><span>壁畫設計</span></div>
+                            </div>
                         </div>
-                        <div class="hero-card-image"><img src="Case-Study/wall-art.jpg" alt="小學戶外牆面藝術"></div>
-                        <h3 class="hero-card-title">戶外牆面藝術</h3>
-                        <div class="hero-card-tags"><span>插畫</span><span>壁畫設計</span></div>
-                    </div>
-                    <div class="hero-card-footer">案例研究 #3</div>
-                </a>
-                <a class="hero-card" href="#case-marine-water" style="--card-accent: #0d5391; --tilt: 4deg; --lift: -4px;">
-                    <div class="hero-card-body">
-                        <div class="hero-card-meta">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/></svg>
-                            海事及水務局
+                    </a>
+                    <a class="hero-card" href="#case-marine-water" style="--card-accent: #0d5391; --tilt: 4deg; --lift: -4px;">
+                        <div class="hero-card-media"><img src="Case-Study/水務局.jpg" alt="澳門海事及水務局戶外水情教育設施"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">即將完成<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">進行中</span></p>
+                            <h3 class="hero-card-title">戶外水情教育設施</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">六塊戶外教育資訊板分佈全澳，向居民介紹日常用水從何而來、如何儲存與再生利用。</p>
+                                <div class="hero-card-tags"><span>資訊設計</span><span>戶外展板</span></div>
+                            </div>
                         </div>
-                        <div class="hero-card-image"><img src="Case-Study/水務局.jpg" alt="澳門海事及水務局戶外水情教育設施"></div>
-                        <h3 class="hero-card-title">戶外水情教育設施</h3>
-                        <div class="hero-card-tags"><span>資訊設計</span><span>戶外展板</span></div>
-                    </div>
-                    <div class="hero-card-footer">即將完成</div>
-                </a>
+                    </a>
+                    <!-- PLACEHOLDER cards #4-#7: replace image, title and text with the final content -->
+                    <a class="hero-card" href="#case-night-market" style="--card-accent: #c2410c; --tilt: 3deg; --lift: 4px;">
+                        <div class="hero-card-media"><img src="projects/night-market/cover.jpg" alt="渥太華唐人街夜市視覺設計"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">案例研究 #4<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">已完成</span></p>
+                            <h3 class="hero-card-title">渥太華唐人街夜市</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">與渥太華唐人街及 Ottawazine 合作，為夜市打造完整的視覺識別系統。</p>
+                                <div class="hero-card-tags"><span>品牌識別</span><span>活動視覺</span></div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="hero-card" href="#case-tangerine-peel" style="--card-accent: #b7791f; --tilt: -3deg; --lift: 8px;">
+                        <div class="hero-card-media"><img src="projects/Tangerine-Peel/cover.jpg" alt="陳皮品牌包裝設計"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">案例研究 #5<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">已完成</span></p>
+                            <h3 class="hero-card-title">陳皮品牌包裝</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">為陳皮品牌設計包裝，傳達傳統工藝與天然品質。</p>
+                                <div class="hero-card-tags"><span>包裝設計</span><span>品牌視覺</span></div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="hero-card" href="#case-ai-immigration" style="--card-accent: #be185d; --tilt: 2deg; --lift: -2px;">
+                        <div class="hero-card-media"><img src="projects/AI-Immigration-webdesign/cover.jpg" alt="AI移民申請網頁應用程式介面"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">案例研究 #6<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">已完成</span></p>
+                            <h3 class="hero-card-title">AI移民申請網頁應用</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">以清晰的步驟流程，引導用戶完成移民申請的 AI 網頁應用介面。</p>
+                                <div class="hero-card-tags"><span>UI/UX</span><span>網頁應用</span></div>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="hero-card" href="#case-tradeshow-banner" style="--card-accent: #0e7490; --tilt: -4deg; --lift: 6px;">
+                        <div class="hero-card-media"><img src="projects/tradeshow-banner/cover.jpg" alt="展覽展架設計"></div>
+                        <div class="hero-card-panel">
+                            <p class="hero-card-meta">案例研究 #7<span class="hero-card-dot" aria-hidden="true"></span><span class="hero-card-status">已完成</span></p>
+                            <h3 class="hero-card-title">展架設計</h3>
+                            <hr class="hero-card-divider">
+                            <div class="hero-card-reveal">
+                                <p class="hero-card-desc">訊息清晰、視覺醒目的展覽展架，讓攤位在人流中一眼被看見。</p>
+                                <div class="hero-card-tags"><span>平面設計</span><span>展覽物料</span></div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
+
         </section>
 
         <!-- HIDDEN: Featured Work Section (part 1 of 2; the Our Projects comment below sits in the middle)
@@ -336,6 +387,51 @@
                         </div> -->
                         <h3 class="case-study-subtitle">案例研究 #3 – 小學戶外牆面藝術 </h3>
                         <p>我們為一間小學設計大幅戶外牆面藝術，將原本單調的外牆打造成色彩豐富、充滿歡迎感的校園空間，並與學校的價值和形象保持一致。畫面風格活潑、易於小朋友理解，同時採用耐用物料與細緻施工，確保作品在日常使用與天氣變化下仍能保持鮮明、完整。</p>
+                    </div>
+                </div>
+
+                <!-- PLACEHOLDER case studies #4-#7: replace image and text with the final content -->
+                <!-- Case Study 4 -->
+                <div class="case-study" id="case-night-market">
+                    <div class="case-study-content">
+                        <h3 class="case-study-subtitle">案例研究 #4 – 渥太華唐人街夜市</h3>
+                        <p>我們與渥太華唐人街以及加拿大媒體公司 Ottawazine 合作，為「渥太華唐人街夜市」設計完整的視覺識別系統，涵蓋活動主視覺、宣傳物料與現場指示。</p>
+                    </div>
+                    <div class="case-study-image">
+                        <img src="projects/night-market/cover.jpg" alt="渥太華唐人街夜市視覺設計" loading="lazy">
+                    </div>
+                </div>
+
+                <!-- Case Study 5 -->
+                <div class="case-study" id="case-tangerine-peel">
+                    <div class="case-study-image">
+                        <img src="projects/Tangerine-Peel/cover.jpg" alt="陳皮品牌包裝設計" loading="lazy">
+                    </div>
+                    <div class="case-study-content">
+                        <h3 class="case-study-subtitle">案例研究 #5 – 陳皮品牌包裝設計</h3>
+                        <p>我們為一個陳皮品牌設計包裝，以溫潤的色調和簡潔的版面，傳達傳統工藝與天然品質，讓產品在貨架上更容易被認出。</p>
+                    </div>
+                </div>
+
+                <!-- Case Study 6 -->
+                <div class="case-study" id="case-ai-immigration">
+                    <div class="case-study-content">
+                        <h3 class="case-study-subtitle">案例研究 #6 – AI移民申請網頁應用程式</h3>
+                        <p>我們為 AI 移民申請網頁應用程式設計使用介面，以清晰的步驟流程引導用戶準備文件、填寫資料並追蹤申請進度。</p>
+                    </div>
+                    <div class="case-study-image">
+                        <img src="projects/AI-Immigration-webdesign/cover.jpg" alt="AI移民申請網頁應用程式介面" loading="lazy">
+                    </div>
+                </div>
+
+                <!-- Case Study 7 -->
+                <div class="case-study" id="case-tradeshow-banner">
+                    <div class="case-study-image">
+                        <img src="projects/tradeshow-banner/cover.jpg" alt="展覽展架設計" loading="lazy">
+                    </div>
+                    <div class="case-study-content">
+                        <h3 class="case-study-subtitle">案例研究 #7 – 展架設計</h3>
+                        <p>我們設計訊息清晰、視覺醒目的展覽展架，讓重點一眼就能讀懂，幫助攤位在繁忙的展場中脫穎而出。</p>
                     </div>
                 </div>
 

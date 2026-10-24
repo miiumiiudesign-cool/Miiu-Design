@@ -134,14 +134,14 @@ body {
     top: calc(var(--spacing-xl) + var(--spacing-sm));
     left: var(--nav-edge);
     /* Smaller on tablets so it stays clear of the content's narrower margin */
-    height: 46px;
+    height: 32px;
     width: auto;
 }
 
 @media (min-width: 1024px) {
     .nav-logo {
         top: calc(var(--spacing-2xl) + var(--spacing-sm));
-        height: 56px;
+        height: 39px;
     }
 }
 
@@ -532,9 +532,22 @@ body {
     animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ...and the empty logo row isn't needed either. In its place the hero gets
+   top padding equal to .main-content's, doubling the space above the badge */
 @media (min-width: 768px) {
-    .page-logo {
+    .page-logo,
+    .hero-topbar {
         display: none;
+    }
+
+    .hero-home {
+        padding-top: var(--spacing-xl);
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-home {
+        padding-top: var(--spacing-2xl);
     }
 }
 
@@ -545,7 +558,7 @@ body {
     justify-content: center;
     gap: 8px;
     padding: 8px 16px;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.85);
     -webkit-backdrop-filter: blur(8px);
@@ -574,8 +587,25 @@ body {
     white-space: nowrap;
 }
 
+/* A little more air under the headline than the shared .hero spacing */
+.hero-home h1 {
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Chinese pages: page titles in bold (the English pages keep the light
+   weight). Specific enough to beat the portfolio page's own <style>. */
+html:lang(zh-Hant) .hero h1,
+html:lang(zh-Hant) .projects-header h1 {
+    font-weight: 700;
+}
+
 .hero-home .hero-subtitle {
     margin-bottom: 0;
+}
+
+/* Wider spacing around the bars between the three services */
+.hero-subtitle-sep {
+    margin: 0 0.6em;
 }
 
 /* Case study carousel - a full-width strip whose cards drift from right to
@@ -586,8 +616,8 @@ body {
     --card-h: 236px;
     --card-gap: 32px;
     --tab-h: 22px;
-    --notch-w: 50px;
-    --marquee-duration: 42s;
+    --notch-w: 30px; /* narrow, so the company and year fit in the tab */
+    --marquee-per-card: 5.25s; /* time for one card to pass; script.js sets --marquee-cards */
     /* Break out of .main-content to span the whole window */
     width: 100vw;
     margin: var(--spacing-md) 0 calc(var(--spacing-lg) * -1 - 60px) calc(50% - 50vw);
@@ -619,15 +649,17 @@ body {
     }
 }
 
-/* The moving track; script.js appends a copy of the cards and adds
-   .is-looping, so sliding by exactly half its width loops seamlessly */
+/* The moving track; script.js repeats the cards until half the track is
+   wider than the screen, then doubles it and adds .is-looping, so sliding
+   by exactly half its width loops seamlessly at the same speed however
+   many cards there are */
 .hero-cards {
     display: flex;
     width: max-content;
 }
 
 .hero-cards.is-looping {
-    animation: heroMarquee var(--marquee-duration) linear infinite;
+    animation: heroMarquee calc(var(--marquee-per-card) * var(--marquee-cards, 8)) linear infinite;
 }
 
 .hero-carousel:hover .hero-cards,
@@ -658,7 +690,15 @@ body {
     padding: 6px;
     border-radius: 24px;
     overflow: hidden;
-    background: #fff;
+    /* The frame and the text panel are tinted in the project's own colours
+       (the same pair as its case study page). The frame can start from
+       another colour at the top (--card-top-color), but by the panel it is
+       the panel's colour, so the panel runs straight into it. */
+    --card-mid-color: color-mix(in srgb, var(--card-accent-2, #fff), var(--card-accent, #fff));
+    --card-panel: color-mix(in srgb, var(--card-panel-color, var(--card-mid-color)) 42%, #fff);
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--card-top-color, var(--card-panel-color, var(--card-mid-color))) 42%, #fff),
+        var(--card-panel) 62%);
     box-shadow:
         0 20px 40px -18px rgba(13, 40, 90, 0.35),
         0 2px 6px rgba(15, 23, 42, 0.06);
@@ -704,11 +744,11 @@ body {
     transform: scale(1.05);
 }
 
-/* White panel overlapping the image. Its top steps down on the right:
+/* Panel overlapping the image (in the card's --card-panel tint). Its top steps down on the right:
    ::before is the raised tab on the left, ::after the concave curve
    where the tab meets the lower step.
    The tab and curve overlap the panel by 1px, and the panel carries a 1px
-   white edge on the left, so the tilted (anti-aliased) card shows no hairline
+   edge of its own colour on the left, so the tilted (anti-aliased) card shows no hairline
    of the image through the seams. */
 .hero-card-panel {
     position: relative;
@@ -717,8 +757,8 @@ body {
     margin-top: -14px;
     padding: 0 8px 4px;
     border-top-right-radius: 14px;
-    background: #fff;
-    box-shadow: -1px 0 0 #fff;
+    background: var(--card-panel);
+    box-shadow: -1px 0 0 var(--card-panel);
 }
 
 .hero-card-panel::before {
@@ -729,8 +769,8 @@ body {
     width: calc(100% - var(--notch-w));
     height: calc(var(--tab-h) + 1px);
     border-radius: 16px 16px 0 0;
-    background: #fff;
-    box-shadow: -1px 0 0 #fff;
+    background: var(--card-panel);
+    box-shadow: -1px 0 0 var(--card-panel);
 }
 
 .hero-card-panel::after {
@@ -740,7 +780,7 @@ body {
     bottom: calc(100% - 1px);
     width: 14px;
     height: 15px;
-    background: radial-gradient(circle at 100% 0, transparent 13.5px, #fff 14px);
+    background: radial-gradient(circle at 100% 0, transparent 13.5px, var(--card-panel) 14px);
 }
 
 /* Sits up in the raised tab, above the step */
@@ -756,6 +796,17 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Company · year: a long company name trails off, the year always shows */
+.hero-card-company {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-card-year {
+    flex-shrink: 0;
 }
 
 .hero-card-dot {
@@ -859,11 +910,6 @@ body {
         display: none;
     }
 
-    .hero-card-dot,
-    .hero-card-status {
-        display: none;
-    }
-
     .hero-topbar {
         --logo-h: 36px;
     }
@@ -880,8 +926,8 @@ body {
         --card-h: 252px;
         --card-gap: 48px;
         --tab-h: 26px;
-        --notch-w: 58px;
-        --marquee-duration: 54s;
+        --notch-w: 34px;
+        --marquee-per-card: 6.75s;
         margin-top: var(--spacing-xl);
     }
 
@@ -895,7 +941,7 @@ body {
     }
 
     .hero-card-meta {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
     }
 
     .hero-card-title {
@@ -908,7 +954,7 @@ body {
         --card-w: 245px;
         --card-h: 266px;
         --card-gap: 56px;
-        --marquee-duration: 60s;
+        --marquee-per-card: 7.5s;
     }
 }
 
@@ -931,11 +977,18 @@ body {
 /* Filter Section */
 .filter-section {
     margin-bottom: var(--spacing-xl);
+    /* Its parent centres its children; stretch instead, so a row of chips
+       wider than the screen scrolls inside the page rather than spilling
+       off both edges */
+    align-self: stretch;
+    min-width: 0;
 }
 
+/* Centred when the chips fit, but a scrollable row starting at the first
+   chip when they don't (justify-content: center would push the first chips
+   off the left edge, where they can't be scrolled back into view) */
 .filter-chips {
     display: flex;
-    justify-content: center;
     gap: var(--spacing-sm);
     overflow-x: auto;
     padding-bottom: var(--spacing-sm);
@@ -945,6 +998,14 @@ body {
 
 .filter-chips::-webkit-scrollbar {
     display: none;
+}
+
+.filter-chips > :first-child {
+    margin-left: auto;
+}
+
+.filter-chips > :last-child {
+    margin-right: auto;
 }
 
 .chip {
@@ -1968,8 +2029,6 @@ body {
 /* Case Studies Section */
 .case-studies {
     padding: var(--spacing-2xl) 0;
-    background-color: #f8fafc;
-    border-radius: var(--radius-lg);
 }
 
 .case-study {
@@ -2138,6 +2197,1616 @@ body {
 @media (min-width: 1280px) {
     .masonry-container {
         columns: 5;
+    }
+}
+
+
+/* =========================================================
+   Case study showcase - a "Case Study" poster: project facts along the
+   top, a huge soft "Case Study" word, a tilted laptop showing the site,
+   floating feature cards and dark platforms. It is the clickable case
+   study on the home page AND the full-screen hero of that case study's
+   own page; clicking it zooms it up into that hero (script.js).
+   Colours per project: --cs-accent / --cs-accent-2.
+   ========================================================= */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.cs-showcase {
+    --cs-accent: #5b5bf0;
+    --cs-accent-2: #d58cf5;
+    position: relative;
+    display: block;
+    align-self: stretch;
+    width: 100%;
+    height: 90vh;
+    min-height: 560px;
+    max-height: 980px;
+    margin-bottom: var(--spacing-2xl);
+    overflow: hidden;
+    border-radius: 28px;
+    background:
+        radial-gradient(38% 45% at 58% 42%, color-mix(in srgb, var(--cs-accent-2) 38%, transparent), transparent 72%),
+        radial-gradient(30% 40% at 40% 62%, color-mix(in srgb, var(--cs-accent) 16%, transparent), transparent 70%),
+        #fbfbfd;
+    box-shadow: 0 30px 60px -30px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.04);
+    color: #111827;
+    text-align: left;
+    text-decoration: none;
+    isolation: isolate;
+    scroll-margin-top: var(--spacing-xl);
+}
+
+/* Project facts along the top */
+.cs-meta {
+    position: absolute;
+    z-index: 3;
+    top: 5%;
+    left: 6%;
+    right: 6%;
+    display: flex;
+    gap: clamp(1rem, 3vw, 3rem);
+}
+
+.cs-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cs-meta-item--push {
+    margin-left: auto;
+}
+
+.cs-meta-label {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.cs-meta-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #1f2937;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.cs-tool {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #1e1e1e;
+}
+
+/* The huge soft word behind the laptop */
+.cs-word {
+    position: absolute;
+    z-index: 0;
+    top: 11%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(70, 48, 68, 0.85) 20%, rgba(150, 120, 160, 0.2) 92%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: blur(1px);
+    font-size: clamp(3.5rem, 12vw, 10.5rem);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Laptop: a rendered 3D MacBook (transparent WebP made with
+   _tools/laptop-render/render.html), sitting on the platforms */
+.cs-laptop {
+    position: absolute;
+    z-index: 2;
+    top: 24%;
+    left: 50%;
+    width: min(58%, 800px);
+    transform: translateX(-50%);
+    filter: drop-shadow(0 40px 36px rgba(20, 16, 40, 0.35));
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cs-laptop-render {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Floating feature cards */
+.cs-card {
+    --cs-card-glow: var(--cs-accent);
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 260px;
+    padding: 12px 18px 12px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow:
+        0 12px 30px -8px color-mix(in srgb, var(--cs-card-glow) 45%, transparent),
+        0 0 0 1px rgba(15, 23, 42, 0.05);
+    animation: csFloat 6s ease-in-out infinite;
+    animation-delay: var(--cs-float-phase, 0s); /* shared clock, see syncCardFloat() */
+}
+
+.cs-card-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--cs-card-glow) 14%, white);
+    color: var(--cs-card-glow);
+}
+
+.cs-card-title {
+    display: block;
+    color: #111827;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.cs-card-desc {
+    display: block;
+    color: #6b7280;
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+
+.cs-card--1 { top: 34%; left: 12%; --cs-card-glow: #f59e0b; }
+.cs-card--2 { top: 55%; left: 7%; --cs-card-glow: #a855f7; animation-delay: calc(var(--cs-float-phase, 0s) - 1.5s); }
+.cs-card--3 { top: 49%; right: 7%; --cs-card-glow: #5b5bf0; animation-delay: calc(var(--cs-float-phase, 0s) - 3s); }
+.cs-card--4 { top: 70%; right: 12%; --cs-card-glow: #ef4444; animation-delay: calc(var(--cs-float-phase, 0s) - 4.5s); }
+
+@keyframes csFloat {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -8px; }
+}
+
+/* Dark platforms along the bottom */
+.cs-platforms span {
+    position: absolute;
+    z-index: 1;
+    bottom: -6%;
+    height: 26%;
+    background: linear-gradient(180deg, #2a2747 0%, #121224 30%, #0a0a12 100%);
+    box-shadow:
+        inset 0 3px 0 color-mix(in srgb, var(--cs-accent) 70%, white),
+        0 -10px 40px -10px color-mix(in srgb, var(--cs-accent) 55%, transparent);
+}
+
+.cs-platforms span:nth-child(1) {
+    left: -4%;
+    width: 46%;
+    transform: skewY(4deg);
+}
+
+.cs-platforms span:nth-child(2) {
+    right: -4%;
+    width: 52%;
+    height: 20%;
+    transform: skewY(-3deg);
+    box-shadow:
+        inset 0 3px 0 color-mix(in srgb, var(--cs-accent-2) 80%, white),
+        0 -10px 40px -10px color-mix(in srgb, var(--cs-accent-2) 55%, transparent);
+}
+
+/* "View case study" pill on the home page / "Scroll for details" on the
+   case study page. Above the bottom fade (see .cs-showcase::after). */
+.cs-cta {
+    position: absolute;
+    z-index: 5;
+    bottom: 6%;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.5);
+    color: #111827;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.cs-cta > span[aria-hidden="true"] {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+/* Hovering the home page block lifts the laptop and the pill... */
+a.cs-showcase:hover .cs-laptop,
+a.cs-showcase:focus-visible .cs-laptop {
+    transform: translateX(-50%) translateY(-10px) scale(1.015);
+}
+
+a.cs-showcase:hover .cs-cta,
+a.cs-showcase:focus-visible .cs-cta,
+.cs-scroll-cue:hover,
+.cs-scroll-cue:focus-visible {
+    transform: translateX(-50%) translateY(-3px);
+    box-shadow: 0 14px 34px -10px rgba(15, 23, 42, 0.6);
+}
+
+a.cs-showcase:hover .cs-cta > span[aria-hidden="true"] {
+    transform: translateX(4px);
+}
+
+/* ...and pointing at the pill itself fills it in */
+.cs-cta:hover,
+a.cs-showcase:focus-visible .cs-cta,
+.cs-scroll-cue:focus-visible {
+    background: #111827;
+    color: #fff;
+}
+
+.cs-scroll-cue:hover > span[aria-hidden="true"],
+.cs-scroll-cue:focus-visible > span[aria-hidden="true"] {
+    transform: translateY(3px);
+}
+
+
+@media (max-width: 767px) {
+    .cs-showcase {
+        min-height: 600px;
+        border-radius: 22px;
+    }
+
+    .cs-meta {
+        top: 4%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 16px;
+    }
+
+    .cs-meta-item--push {
+        margin-left: 0;
+    }
+
+    .cs-meta-value {
+        font-size: 0.85rem;
+    }
+
+    .cs-word {
+        top: 30%;
+        font-size: 16vw;
+    }
+
+    .cs-laptop {
+        top: 40%;
+        width: 96%;
+    }
+
+    .cs-card {
+        padding: 8px 12px 8px 8px;
+        gap: 8px;
+    }
+
+    .cs-card-icon {
+        width: 30px;
+        height: 30px;
+    }
+
+    .cs-card-desc,
+    .cs-card--2,
+    .cs-card--4 {
+        display: none;
+    }
+
+    .cs-card--1 { top: 36%; left: 4%; }
+    .cs-card--3 { top: auto; bottom: 20%; right: 4%; }
+
+    .cs-platforms span {
+        height: 18%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cs-card {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   AI robot showcase (case study 2): a soft sage poster with lines of
+   faint text behind a floating 3D robot (rendered with
+   _tools/robot-render/render.html), dark glass cards around it and a
+   huge "AI" in the corner. Sized in proportion to its width at every
+   size (--u), with floors so the text stays readable on phones.
+   ========================================================= */
+.cs-showcase--robot {
+    --cs-accent: #6f9a82;
+    --cs-accent-2: #cfe5d8;
+    container-type: size;
+    --u: calc(100cqw / 1152);
+    background:
+        radial-gradient(42% 55% at 50% 42%, rgba(255, 255, 255, 0.9), transparent 70%),
+        radial-gradient(55% 35% at 82% 62%, color-mix(in srgb, var(--cs-accent-2) 55%, transparent), transparent 70%),
+        linear-gradient(180deg, #eef1ef 0%, #dfe5e1 100%);
+}
+
+.cs-showcase--robot .cs-meta-label { color: #8b948f; }
+
+/* Adobe app tiles in the tools list */
+.cs-tool--ai,
+.cs-tool--ps {
+    font-size: max(10px, calc(11 * var(--u)));
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.cs-tool--ai { background: #330000; color: #ff9a00; }
+.cs-tool--ps { background: #001e36; color: #31a8ff; }
+.cs-showcase--robot .cs-meta-value { color: #3c4641; }
+
+/* Lines of faint text running behind the robot and off the left edge */
+.cs-lines {
+    position: absolute;
+    z-index: 0;
+    top: 15%;
+    left: -1.5%;
+    display: flex;
+    flex-direction: column;
+    color: rgba(120, 138, 128, 0.26);
+    font-size: max(30px, calc(86 * var(--u)));
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.cs-lines span:nth-child(even) {
+    padding-left: 8%;
+}
+
+.cs-lines em {
+    color: rgba(84, 122, 100, 0.5);
+    font-style: normal;
+}
+
+/* The huge soft "AI" in the bottom-left corner */
+.cs-ai {
+    position: absolute;
+    z-index: 0;
+    bottom: -7%;
+    left: 4%;
+    background: linear-gradient(180deg, rgba(120, 150, 132, 0.4) 10%, rgba(120, 150, 132, 0) 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: max(120px, calc(300 * var(--u)));
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    pointer-events: none;
+}
+
+/* The robot, floating, with a soft shadow on the "floor" below it */
+.cs-robot {
+    position: absolute;
+    z-index: 2;
+    top: 19%;
+    bottom: 1%;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 30px 30px rgba(40, 60, 50, 0.25));
+    animation: csHover 6s ease-in-out infinite;
+    animation-delay: var(--cs-float-phase, 0s);
+}
+
+.cs-robot img {
+    display: block;
+    width: auto;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+a.cs-showcase:hover .cs-robot img,
+a.cs-showcase:focus-visible .cs-robot img {
+    transform: translateY(-10px) scale(1.015);
+}
+
+.cs-showcase--robot::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    bottom: -1%;
+    left: 50%;
+    width: calc(260 * var(--u));
+    min-width: 120px;
+    height: calc(36 * var(--u));
+    min-height: 16px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(40, 60, 50, 0.3), transparent);
+    filter: blur(6px);
+}
+
+@keyframes csHover {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -10px; }
+}
+
+/* Dark glass cards */
+.cs-glass {
+    position: absolute;
+    z-index: 3;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: linear-gradient(150deg, rgba(64, 76, 70, 0.92), rgba(18, 22, 20, 0.94));
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 24px 40px -18px rgba(20, 32, 26, 0.55);
+    color: #fff;
+    animation: csFloat 6s ease-in-out infinite;
+    animation-delay: var(--cs-float-phase, 0s);
+}
+
+.cs-glass-avatar {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: max(24px, calc(28 * var(--u)));
+    height: max(24px, calc(28 * var(--u)));
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #d8f0e2, #6f9a82 70%);
+    color: #14201a;
+}
+
+/* "Listening..." pill beside the robot's head */
+.cs-glass--pill {
+    top: 23%;
+    left: 62%;
+    display: flex;
+    align-items: center;
+    gap: max(8px, calc(10 * var(--u)));
+    padding: max(5px, calc(6 * var(--u))) max(14px, calc(18 * var(--u))) max(5px, calc(6 * var(--u))) max(5px, calc(6 * var(--u)));
+    border-radius: 999px;
+    font-size: max(11px, calc(13 * var(--u)));
+    animation-delay: calc(var(--cs-float-phase, 0s) - 2s);
+}
+
+.cs-glass-wave {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 12px;
+}
+
+.cs-glass-wave i {
+    width: 2px;
+    height: 100%;
+    border-radius: 2px;
+    background: #bfe3cd;
+    animation: csWave 1.1s ease-in-out infinite;
+}
+
+.cs-glass-wave i:nth-child(2) { animation-delay: -0.3s; }
+.cs-glass-wave i:nth-child(3) { animation-delay: -0.6s; }
+.cs-glass-wave i:nth-child(4) { animation-delay: -0.9s; }
+
+@keyframes csWave {
+    0%, 100% { transform: scaleY(0.35); }
+    50% { transform: scaleY(1); }
+}
+
+/* The robot's side of a practice conversation */
+.cs-glass--chat {
+    top: 52%;
+    left: 8%;
+    width: max(220px, calc(300 * var(--u)));
+    padding: max(12px, calc(16 * var(--u)));
+    border-radius: max(14px, calc(18 * var(--u)));
+    animation-delay: calc(var(--cs-float-phase, 0s) - 3.5s);
+}
+
+.cs-glass-head {
+    display: flex;
+    align-items: flex-start;
+    gap: max(10px, calc(12 * var(--u)));
+}
+
+.cs-glass-logo {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: max(32px, calc(40 * var(--u)));
+    height: max(32px, calc(40 * var(--u)));
+    border-radius: max(8px, calc(10 * var(--u)));
+    background: #0b0d0c;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    color: #bfe3cd;
+}
+
+.cs-glass-text {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: max(12px, calc(14 * var(--u)));
+    line-height: 1.35;
+}
+
+.cs-glass-text strong {
+    color: #fff;
+    font-size: 1.15em;
+    font-weight: 500;
+}
+
+.cs-glass-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: max(10px, calc(14 * var(--u)));
+    padding: max(6px, calc(7 * var(--u))) max(6px, calc(7 * var(--u))) max(6px, calc(7 * var(--u))) max(10px, calc(12 * var(--u)));
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: max(10.5px, calc(12 * var(--u)));
+    white-space: nowrap;
+}
+
+/* a long reply trails off rather than pushing the send button out */
+.cs-glass-input > span:first-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cs-glass-send {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: max(20px, calc(24 * var(--u)));
+    height: max(20px, calc(24 * var(--u)));
+    border-radius: 50%;
+    background: #bfe3cd;
+    color: #14201a;
+    font-size: 0.85em;
+    font-weight: 700;
+}
+
+.cs-glass-tag {
+    position: absolute;
+    top: max(-10px, calc(-11 * var(--u)));
+    right: max(12px, calc(16 * var(--u)));
+    padding: 2px max(8px, calc(10 * var(--u)));
+    border-radius: 999px;
+    background: #bfe3cd;
+    color: #14201a;
+    font-size: max(10px, calc(11 * var(--u)));
+    font-weight: 600;
+}
+
+/* A second conversation, ordering at a restaurant, on the right */
+.cs-glass--order {
+    top: 38%;
+    left: auto;
+    right: 7%;
+    animation-delay: calc(var(--cs-float-phase, 0s) - 1s);
+}
+
+/* Title along the bottom, credit in the corner */
+.cs-caption,
+.cs-credit {
+    position: absolute;
+    z-index: 3;
+    bottom: 4.5%;
+    color: #56625b;
+    font-size: max(13px, calc(16 * var(--u)));
+    white-space: nowrap;
+}
+
+.cs-caption {
+    left: 6%;
+}
+
+.cs-caption strong {
+    color: #1f2a24;
+    font-weight: 600;
+}
+
+.cs-credit {
+    right: 6%;
+    color: #7b867f;
+    font-size: max(11px, calc(12 * var(--u)));
+}
+
+/* On a showcase with dark platforms along the bottom (ChatEverywhere) */
+.cs-showcase:has(.cs-platforms) .cs-caption { color: rgba(255, 255, 255, 0.7); }
+.cs-showcase:has(.cs-platforms) .cs-caption strong { color: #fff; }
+.cs-showcase:has(.cs-platforms) .cs-credit { color: rgba(255, 255, 255, 0.55); }
+
+/* Tablets: the block is tall for its width, so the robot comes out big;
+   start it below the facts and move the cards clear of the screen */
+@media (min-width: 768px) and (max-width: 1100px) {
+    .cs-robot { top: 17%; }
+    .cs-glass--pill { top: 40%; left: auto; right: 4%; }
+    .cs-glass--chat { top: 60%; left: 4%; }
+    .cs-glass--order { top: 48%; left: auto; right: 4%; }
+}
+
+@media (max-width: 767px) {
+    /* Below the three rows of facts, cards over the robot's body */
+    .cs-showcase--robot .cs-lines { top: 37%; }
+    .cs-robot { top: 38%; bottom: 0; }
+    .cs-showcase--robot::before { bottom: -2%; }
+    .cs-glass--pill { top: 60%; left: auto; right: 3%; }
+    .cs-glass--chat { top: auto; bottom: 15%; left: 3%; width: 190px; }
+    .cs-glass--chat .cs-glass-input,
+    .cs-glass--order,
+    .cs-caption,
+    .cs-credit { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cs-robot,
+    .cs-glass,
+    .cs-glass-wave i {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   Mural showcase (case study 3): an icy-blue poster with a big headline,
+   thin orbit lines and the mural on a floating 3D board (rendered with
+   _tools/board-render/render.html), circled by frosted cards. Sized in
+   proportion to its width at every size (--u), like the robot showcase.
+   ========================================================= */
+.cs-showcase--mural {
+    --cs-accent: #6e9db3;
+    --cs-accent-2: #d3e5ee;
+    container-type: size;
+    --u: calc(100cqw / 1152);
+    background:
+        radial-gradient(45% 50% at 50% 52%, rgba(255, 255, 255, 0.95), transparent 72%),
+        radial-gradient(40% 40% at 12% 34%, rgba(165, 202, 218, 0.5), transparent 70%),
+        radial-gradient(40% 30% at 88% 68%, rgba(165, 202, 218, 0.5), transparent 70%),
+        #e8f0f3;
+}
+
+.cs-showcase--mural .cs-meta-label { color: #7f939c; }
+.cs-showcase--mural .cs-meta-value { color: #26343b; }
+.cs-showcase--mural .cs-caption { color: #5a6b74; }
+.cs-showcase--mural .cs-caption strong { color: #16222a; }
+.cs-showcase--mural .cs-credit { color: #7f939c; }
+
+.cs-tool--procreate {
+    overflow: hidden;
+    background: #252525;
+}
+
+.cs-tool--procreate img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Thin orbit lines circling the board */
+.cs-orbits span {
+    position: absolute;
+    z-index: 0;
+    top: 50%;
+    left: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(120, 170, 195, 0.25);
+    pointer-events: none;
+}
+
+.cs-orbits span:nth-child(1) {
+    width: 92%;
+    height: 66%;
+    transform: translate(-50%, -46%) rotate(-12deg);
+}
+
+.cs-orbits span:nth-child(2) {
+    width: 58%;
+    height: 98%;
+    transform: translate(-50%, -48%) rotate(38deg);
+    opacity: 0.7;
+}
+
+/* Big headline, top right: deep blue-grey fading to a translucent ice blue */
+.cs-headline {
+    position: absolute;
+    z-index: 1;
+    top: 14%;
+    right: 6%;
+    background: linear-gradient(160deg, rgba(16, 32, 42, 0.88) 15%, rgba(70, 120, 145, 0.6) 55%, rgba(140, 185, 205, 0.35) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #10181d;
+    font-size: max(30px, calc(66 * var(--u)));
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    pointer-events: none;
+}
+
+/* The board, floating */
+.cs-board {
+    position: absolute;
+    z-index: 2;
+    top: 34%;
+    left: 50%;
+    width: 74%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 40px 36px rgba(30, 60, 80, 0.28));
+    animation: csHover 6s ease-in-out infinite;
+    animation-delay: var(--cs-float-phase, 0s);
+}
+
+.cs-board img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+a.cs-showcase:hover .cs-board img,
+a.cs-showcase:focus-visible .cs-board img {
+    transform: translateY(-10px) scale(1.015);
+}
+
+/* Frosted cards */
+.cs-frost {
+    position: absolute;
+    z-index: 3;
+    color: #fff;
+    animation: csFloat 6s ease-in-out infinite;
+    animation-delay: var(--cs-float-phase, 0s);
+}
+
+/* Dark bar fading out to the right, with a sparkle */
+.cs-frost--tag {
+    top: 28%;
+    left: 5%;
+    display: flex;
+    align-items: center;
+    gap: max(10px, calc(16 * var(--u)));
+    padding: max(10px, calc(15 * var(--u))) max(16px, calc(24 * var(--u)));
+    border-radius: max(10px, calc(14 * var(--u)));
+    background: linear-gradient(90deg, #121417 0%, rgba(18, 20, 23, 0.82) 65%, rgba(18, 20, 23, 0.4) 100%);
+    box-shadow: 0 18px 30px -16px rgba(16, 24, 29, 0.6);
+    font-size: max(12px, calc(15 * var(--u)));
+    white-space: nowrap;
+    animation-delay: calc(var(--cs-float-phase, 0s) - 2s);
+}
+
+.cs-frost--tag svg {
+    width: max(14px, calc(18 * var(--u)));
+    height: max(14px, calc(18 * var(--u)));
+}
+
+/* Pale frosted checklist, over the right end of the board */
+.cs-frost--steps {
+    top: 60%;
+    right: 6%;
+    width: max(150px, calc(196 * var(--u)));
+    padding: max(12px, calc(18 * var(--u))) max(10px, calc(14 * var(--u)));
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: max(14px, calc(20 * var(--u)));
+    background: linear-gradient(160deg, rgba(178, 208, 220, 0.75), rgba(150, 188, 204, 0.6));
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 36px -20px rgba(40, 80, 100, 0.5);
+    text-align: center;
+    animation-delay: calc(var(--cs-float-phase, 0s) - 4s);
+}
+
+.cs-frost-title {
+    display: block;
+    margin-bottom: max(8px, calc(12 * var(--u)));
+    font-size: max(14px, calc(18 * var(--u)));
+    font-weight: 300;
+}
+
+.cs-frost--steps ul {
+    display: grid;
+    gap: max(5px, calc(7 * var(--u)));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cs-frost--steps li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: max(4px, calc(5 * var(--u))) max(5px, calc(6 * var(--u))) max(4px, calc(5 * var(--u))) max(10px, calc(12 * var(--u)));
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    font-size: max(10px, calc(11 * var(--u)));
+}
+
+.cs-frost--steps i {
+    display: grid;
+    place-items: center;
+    width: max(14px, calc(18 * var(--u)));
+    height: max(14px, calc(18 * var(--u)));
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+}
+
+.cs-frost--steps .is-done i {
+    border-color: transparent;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--cs-accent);
+}
+
+/* Tablets: a taller block - a bigger board, cards around it */
+@media (min-width: 768px) and (max-width: 1100px) {
+    .cs-headline { top: 15%; }
+    .cs-board { top: 36%; width: 92%; }
+    .cs-frost--tag { top: 31%; left: 3%; }
+    .cs-frost--steps { top: 63%; right: 4%; }
+}
+
+@media (max-width: 767px) {
+    /* Below the three rows of facts: headline, then the board wider than
+       the block, one card either side */
+    .cs-headline { top: 34%; right: auto; left: 6%; }
+    .cs-board { top: 50%; width: 116%; }
+    .cs-orbits span:nth-child(1) { top: 62%; width: 140%; height: 40%; }
+    .cs-orbits span:nth-child(2) { display: none; }
+    .cs-frost--tag { top: 45%; left: auto; right: 4%; }
+    .cs-frost--steps { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cs-board,
+    .cs-frost {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   Booths showcase (case study 4): a lilac-to-peach poster with a huge
+   glossy "ASCC 2026" behind the eBay booth (cut out of its render), soft
+   rings and frosted cards for the other two brands' booths. Sized in
+   proportion to its width at every size (--u), like the robot showcase.
+   ========================================================= */
+.cs-showcase--booth {
+    --cs-accent: #9b6ae6;
+    --cs-accent-2: #f3c9b8;
+    container-type: size;
+    --u: calc(100cqw / 1152);
+    background:
+        radial-gradient(45% 50% at 52% 58%, rgba(255, 255, 255, 0.75), transparent 72%),
+        linear-gradient(115deg, #c8a4f0 0%, #e6d2f6 42%, #f6e2dc 75%, #f8e8df 100%);
+}
+
+.cs-showcase--booth .cs-meta-label { color: #8a76a6; }
+.cs-showcase--booth .cs-meta-value { color: #2b2140; }
+.cs-showcase--booth .cs-caption { color: #6c5a86; }
+.cs-showcase--booth .cs-caption strong { color: #241a36; }
+.cs-showcase--booth .cs-credit { color: #8a76a6; }
+
+.cs-tool--sketchup {
+    overflow: hidden;
+    background: #fff;
+}
+
+.cs-tool--sketchup img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Huge glossy word behind the booth */
+.cs-bigword {
+    position: absolute;
+    z-index: 0;
+    top: 11%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(150, 88, 236, 0.8) 10%, rgba(196, 150, 248, 0.45) 60%, rgba(236, 200, 240, 0.25) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 10px 24px rgba(140, 80, 220, 0.25));
+    font-size: max(56px, calc(190 * var(--u)));
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Faint rings, like bubbles around the booth */
+.cs-rings span {
+    position: absolute;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+}
+
+.cs-rings span:nth-child(1) { top: 50%; left: 2%; width: calc(230 * var(--u)); aspect-ratio: 1; }
+.cs-rings span:nth-child(2) { top: 40%; right: 0; width: calc(270 * var(--u)); aspect-ratio: 1; }
+.cs-rings span:nth-child(3) { top: 70%; left: 58%; width: calc(150 * var(--u)); aspect-ratio: 1; }
+
+/* The eBay booth, floating */
+.cs-booth {
+    position: absolute;
+    z-index: 2;
+    top: 33%;
+    left: 50%;
+    width: 78%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 30px 30px rgba(80, 40, 120, 0.3));
+    animation: csHover 6s ease-in-out infinite;
+    animation-delay: var(--cs-float-phase, 0s);
+}
+
+.cs-booth img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+a.cs-showcase:hover .cs-booth img,
+a.cs-showcase:focus-visible .cs-booth img {
+    transform: translateY(-10px) scale(1.015);
+}
+
+/* Frosted brand cards */
+.cs-brand {
+    position: absolute;
+    z-index: 3;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 40px -18px rgba(110, 60, 170, 0.45);
+    color: #241a36;
+    animation: csFloat 6s ease-in-out infinite;
+    animation-delay: var(--cs-float-phase, 0s);
+}
+
+.cs-brand strong {
+    display: block;
+    font-size: max(12px, calc(14 * var(--u)));
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.cs-brand small {
+    display: block;
+    color: #7a6a92;
+    font-size: max(10px, calc(11 * var(--u)));
+}
+
+/* eBay: a pill with the brand's four colours */
+.cs-brand--ebay {
+    top: 27%;
+    left: 7%;
+    display: flex;
+    align-items: center;
+    gap: max(8px, calc(12 * var(--u)));
+    padding: max(7px, calc(9 * var(--u))) max(14px, calc(20 * var(--u))) max(7px, calc(9 * var(--u))) max(10px, calc(12 * var(--u)));
+    border-radius: 999px;
+    animation-delay: calc(var(--cs-float-phase, 0s) - 2s);
+}
+
+.cs-brand-dots {
+    display: grid;
+    grid-template-columns: repeat(2, max(7px, calc(9 * var(--u))));
+    gap: 3px;
+}
+
+.cs-brand-dots i {
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+.cs-brand-dots i:nth-child(1) { background: #e53238; }
+.cs-brand-dots i:nth-child(2) { background: #0064d2; }
+.cs-brand-dots i:nth-child(3) { background: #f5af02; }
+.cs-brand-dots i:nth-child(4) { background: #86b817; }
+
+/* The other two booths, as photo cards */
+.cs-brand--supernova,
+.cs-brand--metaverse {
+    width: max(140px, calc(210 * var(--u)));
+    padding: max(6px, calc(8 * var(--u)));
+    border-radius: max(14px, calc(18 * var(--u)));
+}
+
+.cs-brand--supernova img,
+.cs-brand--metaverse img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: max(9px, calc(12 * var(--u)));
+}
+
+.cs-brand figcaption {
+    padding: max(6px, calc(8 * var(--u))) max(4px, calc(6 * var(--u))) max(2px, calc(3 * var(--u)));
+}
+
+.cs-brand--supernova {
+    top: 56%;
+    left: 3%;
+    animation-delay: calc(var(--cs-float-phase, 0s) - 4s);
+}
+
+.cs-brand--metaverse {
+    top: 47%;
+    right: 3%;
+    animation-delay: calc(var(--cs-float-phase, 0s) - 1s);
+}
+
+/* Tablets: a taller block - a bigger booth, cards around it */
+@media (min-width: 768px) and (max-width: 1100px) {
+    .cs-bigword { top: 13%; }
+    .cs-booth { top: 34%; width: 94%; }
+    .cs-brand--ebay { top: 29%; left: 3%; }
+    .cs-brand--metaverse { top: 58%; right: 4%; }
+    .cs-brand--supernova { top: 62%; left: 4%; }
+}
+
+@media (max-width: 767px) {
+    /* Below the three rows of facts: the word, the booth wider than the
+       block, the two photo cards side by side underneath */
+    .cs-bigword { top: 34%; font-size: 15cqw; }
+    .cs-booth { top: 43%; width: 124%; }
+    .cs-rings span:nth-child(2) { display: none; }
+    .cs-brand--ebay { display: none; }
+    .cs-brand--supernova { top: auto; bottom: 14%; left: 4%; width: 44%; }
+    .cs-brand--metaverse { top: auto; bottom: 14%; right: 4%; width: 44%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cs-booth,
+    .cs-brand {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   Case study detail page (below the showcase hero)
+   ========================================================= */
+/* Full-screen hero: the home page block, zoomed up to fill the window.
+   The page has no rail gutter of its own (the nav floats over it and only
+   appears once the visitor scrolls into the details below). */
+.cs-hero .cs-showcase {
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    /* Let the platforms run on below the first screen (clip sideways only) */
+    overflow-x: clip;
+    overflow-y: visible;
+}
+
+/* The hero runs --cs-fade below the first screen: the platforms carry on
+   down into that strip, and the fade into the page happens only there, so
+   the first screen shows the full picture with no fade */
+.cs-hero {
+    --cs-fade: 30vh;
+    position: relative;
+    padding-bottom: var(--cs-fade);
+    background: #fbfbfd;
+    /* the slanted platform bottoms reach a little past the strip - trim them */
+    overflow: clip;
+}
+
+.cs-hero::after {
+    content: "";
+    position: absolute;
+    z-index: 6;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--cs-fade);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 85%);
+    pointer-events: none;
+}
+
+/* Robot and mural heroes: the strip below carries on in the block's backdrop colour */
+.cs-hero:has(.cs-showcase--robot) {
+    background: #dfe5e1;
+}
+
+.cs-hero:has(.cs-showcase--mural) {
+    background: #e8f0f3;
+}
+
+/* The booths backdrop is diagonal: these are the colours along its bottom edge */
+.cs-hero:has(.cs-showcase--booth) {
+    background: linear-gradient(90deg, #d8bcf3 0%, #e6d2f6 25%, #f6e2dc 68%, #f8e8df 100%);
+}
+
+/* Same top edges as on the home page, just extended down by --cs-fade */
+.cs-hero .cs-platforms span:nth-child(1) {
+    bottom: calc(var(--cs-fade) * -1);
+    height: calc(20% + var(--cs-fade));
+}
+
+.cs-hero .cs-platforms span:nth-child(2) {
+    bottom: calc(var(--cs-fade) * -1);
+    height: calc(14% + var(--cs-fade));
+}
+
+@media (max-width: 767px) {
+    .cs-hero .cs-platforms span:nth-child(1),
+    .cs-hero .cs-platforms span:nth-child(2) {
+        height: calc(12% + var(--cs-fade));
+    }
+}
+
+/* The case study's colours, for the details below the hero as well
+   (the showcase sets the same pair on itself) */
+.cs-page {
+    --cs-accent: #5b5bf0;
+    --cs-accent-2: #d58cf5;
+}
+
+.cs-page:has(.cs-showcase--robot) {
+    --cs-accent: #6f9a82;
+    --cs-accent-2: #cfe5d8;
+}
+
+.cs-page:has(.cs-showcase--mural) {
+    --cs-accent: #6e9db3;
+    --cs-accent-2: #d3e5ee;
+}
+
+.cs-page:has(.cs-showcase--booth) {
+    --cs-accent: #9b6ae6;
+    --cs-accent-2: #f3c9b8;
+}
+
+.cs-page .main-content {
+    padding-top: var(--spacing-2xl);
+}
+
+@media (min-width: 768px) {
+    body.cs-page {
+        padding-left: 0;
+    }
+
+    /* Keep the details clear of the nav once it slides in */
+    .cs-page .main-content {
+        padding-left: calc(var(--nav-rail-width) + var(--spacing-xl));
+    }
+}
+
+/* Nav (and logo) hidden over the hero, eased in at the details */
+.cs-page .desktop-nav,
+.cs-page .mobile-nav {
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+}
+
+.cs-page:not(.cs-nav-visible) .desktop-nav,
+.cs-page:not(.cs-nav-visible) .mobile-nav {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s 0.4s;
+}
+
+.cs-page:not(.cs-nav-visible) .desktop-nav {
+    transform: translateX(-24px);
+}
+
+.cs-page:not(.cs-nav-visible) .mobile-nav {
+    transform: translateY(100%);
+}
+
+.cs-scroll-cue {
+    text-decoration: none;
+    animation: csCueIn 0.5s ease 0.2s both;
+}
+
+/* Same size as the home page's "view case study" pill, rather than
+   scaling up with the full-screen hero */
+.cs-hero .cs-cta {
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
+
+@keyframes csCueIn {
+    from { opacity: 0; }
+}
+
+/* Zoom from the home page (script.js): a copy of the clicked block grows
+   to fill the screen, then the case study page opens on the same picture.
+   The copy ignores the pointer so the laptop settles back to its resting
+   tilt, and its "view case study" pill fades out. */
+.cs-zoom-clone {
+    pointer-events: none;
+}
+
+.cs-zoom-clone .cs-cta {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cs-zooming .desktop-nav,
+.cs-zooming .mobile-nav {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.cs-detail {
+    max-width: 1100px;
+    margin: 0 auto var(--spacing-2xl);
+    padding: 0 var(--spacing-lg);
+}
+
+.cs-detail-grid {
+    display: grid;
+    gap: var(--spacing-2xl);
+}
+
+.cs-detail-kicker {
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.cs-detail h2 {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-hero);
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.cs-detail p {
+    margin-bottom: var(--spacing-lg);
+    color: #4b5563;
+    line-height: 1.8;
+}
+
+/* Facts panel in the hero's backdrop: near-white with a lilac glow in
+   one corner and a faint indigo one in the other */
+.cs-detail-facts {
+    display: grid;
+    gap: var(--spacing-md);
+    align-content: start;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    background:
+        radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--cs-accent-2) 24%, transparent), transparent 62%),
+        radial-gradient(100% 70% at 0% 100%, color-mix(in srgb, var(--cs-accent) 12%, transparent), transparent 60%),
+        #fbfbfd;
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--cs-accent) 14%, transparent),
+        0 18px 40px -26px color-mix(in srgb, var(--cs-accent) 50%, transparent);
+}
+
+.cs-detail-facts dt {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.cs-detail-facts dd {
+    color: #111827;
+    font-weight: 600;
+}
+
+.cs-detail-facts a {
+    color: var(--cs-accent);
+}
+
+.cs-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.cs-feature {
+    --cs-card-glow: var(--primary-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    background: #fff;
+    box-shadow:
+        0 12px 30px -14px color-mix(in srgb, var(--cs-card-glow) 45%, transparent),
+        0 0 0 1px rgba(15, 23, 42, 0.05);
+}
+
+.cs-feature .cs-card-icon {
+    margin-bottom: var(--spacing-md);
+}
+
+.cs-feature h3 {
+    margin-bottom: var(--spacing-sm);
+    color: #111827;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.cs-feature p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+/* Full screenshot in a simple browser window */
+.cs-browser {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: #fff;
+    box-shadow: 0 30px 60px -30px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(15, 23, 42, 0.06);
+}
+
+.cs-browser-bar {
+    display: flex;
+    gap: 6px;
+    padding: 12px 14px;
+    background: #f1f3f6;
+}
+
+.cs-browser-bar span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d1d5db;
+}
+
+.cs-browser img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* A screen from the product, framed like the screenshot, with a caption */
+.cs-screen {
+    margin: 0;
+}
+
+/* Several of them, one under another */
+.cs-gallery {
+    display: grid;
+    gap: var(--spacing-xl);
+}
+
+.cs-screen figcaption strong {
+    color: #111827;
+    font-weight: 600;
+}
+
+/* Photo carousel (script.js adds the dots and .has-controls once there is
+   more than one photo): a scroll-snapping row, so it also swipes */
+.cs-carousel-viewport {
+    position: relative;
+}
+
+.cs-carousel-track {
+    display: flex;
+    aspect-ratio: 16 / 10;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+}
+
+.cs-carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.cs-carousel-track:focus-visible {
+    outline: 2px solid var(--cs-accent);
+    outline-offset: -2px;
+}
+
+.cs-carousel .cs-carousel-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    scroll-snap-align: start;
+}
+
+.cs-carousel-btn {
+    position: absolute;
+    top: 50%;
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 8px 20px -8px rgba(15, 23, 42, 0.45);
+    color: #111827;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.cs-carousel-btn--prev { left: 12px; }
+.cs-carousel-btn--next { right: 12px; }
+
+.cs-carousel-btn:hover,
+.cs-carousel-btn:focus-visible {
+    background: #fff;
+}
+
+.cs-carousel-btn:disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cs-carousel.has-controls .cs-carousel-btn {
+    display: grid;
+}
+
+.cs-carousel-dots {
+    display: none;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 12px;
+}
+
+.cs-carousel.has-controls .cs-carousel-dots {
+    display: flex;
+}
+
+.cs-carousel-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: #d1d5db;
+    cursor: pointer;
+    transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.cs-carousel-dot[aria-current="true"] {
+    width: 22px;
+    background: var(--cs-accent);
+}
+
+@media (max-width: 767px) {
+    .cs-carousel-btn { width: 36px; height: 36px; font-size: 1.3rem; }
+}
+
+.cs-screen figcaption {
+    padding: 12px 16px;
+    color: #6b7280;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.cs-next {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-xl);
+    border-top: 1px solid #e5e7eb;
+}
+
+.cs-back {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Light buttons in the hero's palette: the near-white backdrop washed
+   with lilac, indigo text, a soft accent glow */
+.cs-detail .cta-btn {
+    display: inline-block;
+    text-decoration: none;
+    color: color-mix(in srgb, var(--cs-accent) 70%, #111827);
+    background:
+        radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--cs-accent-2) 22%, transparent), transparent 70%),
+        linear-gradient(180deg, #ffffff, #f4f3fe);
+    box-shadow:
+        inset 0 1px 0 #ffffff,
+        0 0 0 1px color-mix(in srgb, var(--cs-accent) 22%, transparent),
+        0 10px 24px -12px color-mix(in srgb, var(--cs-accent) 45%, transparent);
+}
+
+.cs-detail .cta-btn:hover,
+.cs-detail .cta-btn:focus-visible {
+    color: color-mix(in srgb, var(--cs-accent) 85%, #111827);
+    background:
+        radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--cs-accent-2) 36%, transparent), transparent 70%),
+        linear-gradient(180deg, #ffffff, #eeecfd);
+    box-shadow:
+        inset 0 1px 0 #ffffff,
+        0 0 0 1px color-mix(in srgb, var(--cs-accent) 38%, transparent),
+        0 14px 30px -12px color-mix(in srgb, var(--cs-accent) 65%, transparent);
+}
+
+@media (min-width: 900px) {
+    .cs-detail-grid {
+        grid-template-columns: 1.6fr 1fr;
+    }
+}
+
+/* From tablets up, everything inside the showcase is sized in proportion
+   to the showcase's own width (--u = 1px when it is 1152px wide, its size
+   on a desktop home page). The full-screen hero on the case study page is
+   then a true enlargement of the home page block, so the zoom between them
+   lands on the same picture. Text and the cards have floors (max()) so they
+   stay readable on tablets, where the block is much narrower. */
+@media (min-width: 768px) {
+    .cs-showcase {
+        container-type: size;
+        --u: calc(100cqw / 1152);
+        border-radius: calc(28 * var(--u));
+    }
+
+    .cs-meta { gap: max(16px, calc(48 * var(--u))); }
+    .cs-meta-item { gap: calc(4 * var(--u)); }
+    .cs-meta-label { font-size: max(11px, calc(12 * var(--u))); }
+    .cs-meta-value { gap: calc(6 * var(--u)); font-size: max(13px, calc(15.2 * var(--u))); }
+    .cs-tool { width: calc(24 * var(--u)); height: calc(24 * var(--u)); border-radius: calc(6 * var(--u)); }
+    .cs-tool svg { width: calc(11 * var(--u)); height: calc(16 * var(--u)); }
+    .cs-word { font-size: calc(160 * var(--u)); }
+    .cs-laptop { width: 58%; }
+
+    .cs-card {
+        gap: max(8px, calc(12 * var(--u)));
+        max-width: max(190px, calc(260 * var(--u)));
+        padding: max(8px, calc(12 * var(--u))) max(12px, calc(18 * var(--u))) max(8px, calc(12 * var(--u))) max(8px, calc(12 * var(--u)));
+        border-radius: max(10px, calc(14 * var(--u)));
+    }
+
+    .cs-showcase .cs-card-icon {
+        width: max(28px, calc(38 * var(--u)));
+        height: max(28px, calc(38 * var(--u)));
+        border-radius: max(8px, calc(10 * var(--u)));
+    }
+
+    .cs-showcase .cs-card-icon svg { width: max(14px, calc(18 * var(--u))); height: max(14px, calc(18 * var(--u))); }
+    .cs-card-title { font-size: max(12px, calc(14.4 * var(--u))); }
+    .cs-card-desc { font-size: max(10.5px, calc(11.5 * var(--u))); }
+
+    .cs-cta {
+        gap: max(6px, calc(8 * var(--u)));
+        padding: max(8px, calc(10 * var(--u))) max(16px, calc(20 * var(--u)));
+        font-size: max(13px, calc(14.4 * var(--u)));
     }
 }
 

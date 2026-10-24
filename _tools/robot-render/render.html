@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<!--
+    AI robot render for the case study showcases.
+
+    Builds a 3D service robot (white body, black front panel, tablet head;
+    three.js 0.160 from ../laptop-render/vendor/) with a picture on its screen
+    and renders it to a transparent, trimmed WebP. Not part of the site: GitHub
+    Pages skips folders that start with "_".
+
+    Preview (served over http, e.g. a local server at the repo root):
+        /_tools/robot-render/render.html?preview
+    Export (headless Chrome prints the image as a data URL in <pre id="out">):
+        Chrome --headless=new --dump-dom --virtual-time-budget=20000 \
+            "http://localhost:8123/_tools/robot-render/render.html"
+        then decode the data URL into Case-Study/<name>-robot.webp (and copy to en/Case-Study/).
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Robot render</title>
+    <style>
+        html, body { margin: 0; background: #e4e8e5; }
+        canvas { display: block; max-width: 100vw; height: auto; }
+        #out { display: none; }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../laptop-render/vendor/three.module.js",
+                "three/addons/": "../laptop-render/vendor/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <pre id="out"></pre>
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+        const params = new URLSearchParams(location.search);
+        const screenSrc = params.get('screen') || '../../Case-Study/澳門沙梨頭坊眾學校-AI對話機械人.jpg';
+        const preview = params.has('preview');
+        const W = Number(params.get('w') || 2000);
+        const H = Number(params.get('h') || 2600);
+
+        // --- Renderer, scene, lighting ------------------------------------------------
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+        renderer.setPixelRatio(1);
+        renderer.setSize(W, H);
+        renderer.setClearColor(0x000000, 0);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = Number(params.get('exposure') || 1.1);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        const scene = new THREE.Scene();
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+        const key = new THREE.DirectionalLight(0xffffff, 2.2);
+        key.position.set(-60, 120, 140);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(0xcfe8da, 2.4); // sage rim, matches the showcase
+        rim.position.set(90, 60, -80);
+        scene.add(rim);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+
+        // --- Materials ----------------------------------------------------------------------
+        const whitePlastic = new THREE.MeshPhysicalMaterial({
+            color: 0xf2f3f4, roughness: 0.34, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.14,
+            envMapIntensity: 1.0
+        });
+        const blackGloss = new THREE.MeshPhysicalMaterial({
+            color: 0x0c0d0f, roughness: 0.28, metalness: 0.15, clearcoat: 1, clearcoatRoughness: 0.08,
+            envMapIntensity: 1.5, side: THREE.DoubleSide
+        });
+        const greyPanel = new THREE.MeshPhysicalMaterial({
+            color: 0x34363b, roughness: 0.45, metalness: 0.25, clearcoat: 0.5, clearcoatRoughness: 0.3,
+            envMapIntensity: 1.3, side: THREE.DoubleSide
+        });
+        const darkRubber = new THREE.MeshStandardMaterial({ color: 0x151618, roughness: 0.7, metalness: 0.1 });
+
+        // Rounded rectangle with UVs spanning 0..1 (screen, glass, glare)
+        function roundedRect(w, h, r) {
+            const s = new THREE.Shape();
+            s.moveTo(-w / 2 + r, -h / 2);
+            s.lineTo(w / 2 - r, -h / 2);
+            s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+            s.lineTo(w / 2, h / 2 - r);
+            s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
+            s.lineTo(-w / 2 + r, h / 2);
+            s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
+            s.lineTo(-w / 2, -h / 2 + r);
+            s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+            const geo = new THREE.ShapeGeometry(s, 32);
+            const uv = geo.attributes.uv, pos = geo.attributes.position;
+            for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / w + 0.5, pos.getY(i) / h + 0.5);
+            return geo;
+        }
+
+        // A smooth lathe through the given [radius, height] points
+        function lathe(points, segments = 160) {
+            const curve = new THREE.SplineCurve(points.map(([r, y]) => new THREE.Vector2(r, y)));
+            return new THREE.LatheGeometry(curve.getPoints(points.length * 16), segments);
+        }
+
+        // --- Model (centimetres, ~100 tall) ---------------------------------------------
+        const robot = new THREE.Group();
+        scene.add(robot);
+
+        // Base: a wide drum with a dark rubber skirt
+        robot.add(new THREE.Mesh(lathe([[0, 0], [18.6, 0.05], [20.1, 0.6], [20.7, 1.6], [20.9, 2.3]], 160), darkRubber));
+        robot.add(new THREE.Mesh(lathe([[20.9, 2.3], [21.25, 4], [21.3, 6.4], [20.9, 8.4], [19.9, 9.6], [18.6, 10.05], [0, 10.1]]), whitePlastic));
+        const seam = new THREE.Mesh(new THREE.TorusGeometry(18.4, 0.2, 12, 160), darkRubber);
+        seam.rotation.x = Math.PI / 2;
+        seam.position.y = 10.08;
+        robot.add(seam);
+
+        // Body: flares out onto the base, slim waist, a slightly wider collar
+        // at the top that dips in around the neck
+        const bodyProfile = [[18.2, 10], [16.6, 12.4], [14.6, 16], [13.0, 21], [11.9, 27], [11.2, 34], [10.9, 42],
+            [10.95, 50], [11.25, 58], [11.7, 64], [11.95, 68.4], [11.7, 69.9], [10.6, 70.5], [9.3, 70.4]];
+        const bodyCurve = new THREE.SplineCurve(bodyProfile.map(([r, y]) => new THREE.Vector2(r, y)));
+        robot.add(new THREE.Mesh(lathe(bodyProfile), whitePlastic));
+
+        // Body radius at a height: interpolated along the profile curve
+        // (stepping between samples shows as bands on the shells below)
+        const bodySamples = bodyCurve.getPoints(2000).filter(p => p.y <= 69.9).sort((p, q) => p.y - q.y);
+        function bodyR(y) {
+            for (let i = 1; i < bodySamples.length; i++) {
+                const p = bodySamples[i - 1], q = bodySamples[i];
+                if (q.y >= y) return p.x + (q.x - p.x) * (y - p.y) / Math.max(1e-6, q.y - p.y);
+            }
+            return bodySamples[bodySamples.length - 1].x;
+        }
+
+        // A shell hugging the front of the body: between heights y0..y1, at
+        // `lift` cm off the surface, `halfAngle(y)` radians either side of front
+        function frontShell(y0, y1, lift, halfAngle, rows = 220, cols = 90) {
+            const pos = [], idx = [];
+            for (let i = 0; i <= rows; i++) {
+                const y = y0 + (y1 - y0) * i / rows;
+                const r = bodyR(y) + lift;
+                const h = Math.max(0.0001, halfAngle(y));
+                for (let j = 0; j <= cols; j++) {
+                    const a = -h + 2 * h * j / cols;
+                    pos.push(r * Math.sin(a), y, r * Math.cos(a));
+                }
+            }
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const a = i * (cols + 1) + j, b = a + cols + 1;
+                    idx.push(a, a + 1, b, a + 1, b + 1, b);
+                }
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+            geo.setIndex(idx);
+            geo.computeVertexNormals();
+            return geo;
+        }
+
+        // Black front panel: wide across the upper body, narrowing to a
+        // rounded point low down where the white flares out around it
+        const rounded = (y, bottom, full, width) => {
+            if (y >= full) return width;
+            const t = Math.max(0, (y - bottom) / (full - bottom));
+            return width * Math.sqrt(1 - (1 - t) * (1 - t));
+        };
+        robot.add(new THREE.Mesh(frontShell(17.5, 69.6, 0.12, y => rounded(y, 17.5, 40, 1.22)), blackGloss));
+
+        // Dark grey insert on the lower panel, carrying the buttons and camera
+        robot.add(new THREE.Mesh(frontShell(19.6, 46.5, 0.3, y => {
+            const w = rounded(y, 19.6, 36, 0.6);
+            return y > 44.5 ? w * Math.sqrt(Math.max(0, 1 - ((y - 44.5) / 2) ** 2)) : w;
+        }), greyPanel));
+
+        // Front details, sitting on the insert / panel at the front (+z)
+        const onFront = (mesh, y, lift) => {
+            mesh.position.set(0, y, bodyR(y) + lift);
+            robot.add(mesh);
+        };
+        for (const y of [41.6, 39.4, 37.2]) {
+            onFront(new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.25, 32).rotateX(Math.PI / 2), blackGloss), y, 0.42);
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.08, 10, 40), new THREE.MeshStandardMaterial({ color: 0x6b6e75, roughness: 0.4, metalness: 0.6 }));
+            onFront(ring, y, 0.42);
+        }
+        // Camera: a dark lens in a brushed ring
+        onFront(new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.15, 0.5, 64).rotateX(Math.PI / 2),
+            new THREE.MeshStandardMaterial({ color: 0x8a8d93, roughness: 0.3, metalness: 0.85 })), 32.6, 0.45);
+        onFront(new THREE.Mesh(new THREE.CylinderGeometry(1.45, 1.45, 0.6, 64).rotateX(Math.PI / 2),
+            new THREE.MeshPhysicalMaterial({ color: 0x050608, roughness: 0.05, metalness: 0.2, clearcoat: 1 })), 32.6, 0.55);
+        onFront(new THREE.Mesh(new THREE.CircleGeometry(0.32, 24),
+            new THREE.MeshBasicMaterial({ color: 0xe9e9ee, toneMapped: false })), 33.1, 0.9);
+        // Status light: a short cyan bar
+        onFront(new THREE.Mesh(new THREE.CapsuleGeometry(0.26, 1.5, 8, 16),
+            new THREE.MeshBasicMaterial({ color: 0x7ff3ff, toneMapped: false })), 53, 0.22);
+
+        // Neck rising out of the collar to the screen
+        robot.add(new THREE.Mesh(lathe([[9.6, 70.2], [8.2, 71.4], [6.9, 73.2], [6.0, 75.6], [5.5, 78.5], [5.4, 82.5], [0, 82.6]]), whitePlastic));
+        const mount = new THREE.Mesh(new RoundedBoxGeometry(9, 5, 7, 4, 1.6), whitePlastic);
+        mount.position.set(0, 82.5, 2.6);
+        robot.add(mount);
+
+        // Head: a tablet, white shell with a black glass front, tilted back
+        const head = new THREE.Group();
+        head.position.set(0, 88.5, 6.2);
+        head.rotation.x = -0.16;
+        robot.add(head);
+
+        const TW = 36, TH = 23.4, TD = 2.4;
+        head.add(new THREE.Mesh(new RoundedBoxGeometry(TW, TH, TD, 6, 1.1), whitePlastic));
+        const glass = new THREE.Mesh(roundedRect(TW - 0.5, TH - 0.5, 1.0), new THREE.MeshPhysicalMaterial({
+            color: 0x060607, roughness: 0.1, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.04
+        }));
+        glass.position.z = TD / 2 + 0.01;
+        head.add(glass);
+
+        // Picture on the screen, cropped to fill it (kept low, so the
+        // character's "Welcome" sign stays in view)
+        const DW = 32.2, DH = 18.6;
+        const shot = await new THREE.ImageLoader().loadAsync(screenSrc);
+        const sc = document.createElement('canvas');
+        sc.width = 2200;
+        sc.height = Math.round(sc.width * DH / DW);
+        const scale = Math.max(sc.width / shot.width, sc.height / shot.height);
+        sc.getContext('2d').drawImage(shot, (sc.width - shot.width * scale) / 2, (sc.height - shot.height * scale) * 0.85,
+            shot.width * scale, shot.height * scale);
+        const screenTex = new THREE.CanvasTexture(sc);
+        screenTex.colorSpace = THREE.SRGBColorSpace;
+        screenTex.anisotropy = 16;
+        const display = new THREE.Mesh(roundedRect(DW, DH, 0.35), new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false }));
+        display.position.set(0, -0.55, TD / 2 + 0.02);
+        head.add(display);
+
+        // Front camera and sensor along the top bezel
+        const cam = new THREE.Mesh(new THREE.CircleGeometry(0.42, 32), new THREE.MeshBasicMaterial({ color: 0x23252b }));
+        cam.position.set(0, TH / 2 - 1.15, TD / 2 + 0.02);
+        head.add(cam);
+        const sensor = new THREE.Mesh(new THREE.CircleGeometry(0.3, 32), new THREE.MeshBasicMaterial({ color: 0x3a2a30 }));
+        sensor.position.set(-2.2, TH / 2 - 1.15, TD / 2 + 0.02);
+        head.add(sensor);
+
+        // Soft diagonal glare across the glass
+        const gc = document.createElement('canvas');
+        gc.width = 1024; gc.height = 680;
+        const gg = gc.getContext('2d');
+        const grad = gg.createLinearGradient(0, 0, gc.width, gc.height);
+        grad.addColorStop(0.0, 'rgba(255,255,255,0.16)');
+        grad.addColorStop(0.32, 'rgba(255,255,255,0.04)');
+        grad.addColorStop(0.33, 'rgba(255,255,255,0.0)');
+        grad.addColorStop(1.0, 'rgba(255,255,255,0.0)');
+        gg.fillStyle = grad;
+        gg.fillRect(0, 0, gc.width, gc.height);
+        const glare = new THREE.Mesh(roundedRect(TW - 0.7, TH - 0.7, 0.9), new THREE.MeshBasicMaterial({
+            map: new THREE.CanvasTexture(gc), transparent: true, depthWrite: false, toneMapped: false
+        }));
+        glare.position.z = TD / 2 + 0.04;
+        head.add(glare);
+
+        // --- Pose & camera ----------------------------------------------------------------
+        robot.rotation.y = Number(params.get('ry') || -0.42);  // turned so its right side recedes
+        robot.rotation.z = Number(params.get('rz') || -0.05);  // a slight lean, as if floating
+
+        const camera = new THREE.PerspectiveCamera(20, W / H, 1, 1000);
+        camera.position.set(0, 88, 330);
+        camera.lookAt(0, 50, 0);
+
+        renderer.render(scene, camera);
+
+        // --- Export: trim transparent margins, output WebP --------------------------------
+        const src = renderer.domElement;
+        const probe = document.createElement('canvas');
+        probe.width = W; probe.height = H;
+        const pg = probe.getContext('2d');
+        pg.drawImage(src, 0, 0);
+        const data = pg.getImageData(0, 0, W, H).data;
+        let minX = W, minY = H, maxX = 0, maxY = 0;
+        for (let y = 0; y < H; y++) {
+            for (let x = 0; x < W; x++) {
+                if (data[(y * W + x) * 4 + 3] > 8) {
+                    if (x < minX) minX = x; if (x > maxX) maxX = x;
+                    if (y < minY) minY = y; if (y > maxY) maxY = y;
+                }
+            }
+        }
+        const pad = 6;
+        minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
+        maxX = Math.min(W - 1, maxX + pad); maxY = Math.min(H - 1, maxY + pad);
+        const out = document.createElement('canvas');
+        out.width = maxX - minX + 1; out.height = maxY - minY + 1;
+        out.getContext('2d').drawImage(src, minX, minY, out.width, out.height, 0, 0, out.width, out.height);
+        document.getElementById('out').textContent = out.toDataURL('image/webp', 0.9);
+        if (preview) {
+            out.style.cssText = 'display:block;max-width:100vw;max-height:100vh;margin:auto';
+            document.body.appendChild(out);
+        }
+        document.title = `done ${out.width}x${out.height}`;
+    </script>
+</body>
+</html>

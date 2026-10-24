@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--
+    MacBook render for the case study showcases.
+
+    Builds a 3D MacBook (three.js 0.160, copied into vendor/) with a website screenshot on its screen and
+    renders it to a transparent, trimmed WebP. Not part of the site: GitHub
+    Pages skips folders that start with "_".
+
+    Preview (served over http, e.g. a local server at the repo root):
+        /_tools/laptop-render/render.html?preview&screen=../../Case-Study/chateverywhere-site.jpg
+    Export (headless Chrome prints the image as a data URL in <pre id="out">):
+        Chrome --headless=new --dump-dom --virtual-time-budget=20000 \
+            "http://localhost:8123/_tools/laptop-render/render.html?screen=../../Case-Study/chateverywhere-site.jpg"
+        then decode the data URL into Case-Study/<name>-laptop.webp (and copy to en/Case-Study/).
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MacBook render</title>
+    <style>
+        html, body { margin: 0; background: #e9e6ef; }
+        canvas { display: block; max-width: 100vw; height: auto; }
+        #out { display: none; }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./vendor/three.module.js",
+                "three/addons/": "./vendor/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <pre id="out"></pre>
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+        const params = new URLSearchParams(location.search);
+        const screenSrc = params.get('screen') || '../../Case-Study/chateverywhere-site.jpg';
+        const preview = params.has('preview');
+        const W = Number(params.get('w') || 2400);
+        const H = Number(params.get('h') || 1800);
+
+        // --- Renderer, scene, lighting ------------------------------------------------
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+        renderer.setPixelRatio(1);
+        renderer.setSize(W, H);
+        renderer.setClearColor(0x000000, 0);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        const scene = new THREE.Scene();
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+        const key = new THREE.DirectionalLight(0xffffff, 2.4);
+        key.position.set(-20, 40, 35);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(0xd9c2ff, 2.2); // lilac rim, matches the showcase glow
+        rim.position.set(30, 18, -30);
+        scene.add(rim);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.15));
+
+        // --- Materials ----------------------------------------------------------------------
+        const aluminium = new THREE.MeshPhysicalMaterial({
+            color: 0x2a2b30, metalness: 0.55, roughness: 0.3, clearcoat: 0.6, clearcoatRoughness: 0.25,
+            envMapIntensity: 1.9
+        });
+        const darkPlastic = new THREE.MeshStandardMaterial({ color: 0x0c0c0e, roughness: 0.55, metalness: 0.2 });
+        const bezelGlass = new THREE.MeshPhysicalMaterial({
+            color: 0x050506, metalness: 0.1, roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.05
+        });
+
+        // Rounded-rectangle helpers: the outline (also extruded for the lid) and
+        // flat parts (trackpad, bezel, notch, glare) with UVs spanning 0..1
+        function roundedRectShape(w, h, r) {
+            const s = new THREE.Shape();
+            s.moveTo(-w / 2 + r, -h / 2);
+            s.lineTo(w / 2 - r, -h / 2);
+            s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+            s.lineTo(w / 2, h / 2 - r);
+            s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
+            s.lineTo(-w / 2 + r, h / 2);
+            s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
+            s.lineTo(-w / 2, -h / 2 + r);
+            s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+            return s;
+        }
+
+        function roundedRect(w, h, r) {
+            const geo = new THREE.ShapeGeometry(roundedRectShape(w, h, r), 32);
+            const uv = geo.attributes.uv, pos = geo.attributes.position;
+            for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / w + 0.5, pos.getY(i) / h + 0.5);
+            return geo;
+        }
+
+        // Keyboard + speaker grilles drawn on a canvas
+        function keyboardTexture() {
+            const c = document.createElement('canvas');
+            c.width = 2900; c.height = 1150;
+            const g = c.getContext('2d');
+            g.fillStyle = '#2b2c31'; // deck, same tone as the body
+            g.fillRect(0, 0, c.width, c.height);
+            // speaker grilles
+            g.fillStyle = '#0c0c0e';
+            for (const x0 of [40, c.width - 240]) {
+                for (let y = 40; y < c.height - 40; y += 22) {
+                    for (let x = x0; x < x0 + 200; x += 22) {
+                        g.beginPath(); g.arc(x, y, 5, 0, Math.PI * 2); g.fill();
+                    }
+                }
+            }
+            // keys
+            const kx = 300, kw = c.width - 600, rows = [0.55, 1, 1, 1, 1, 1];
+            const total = rows.reduce((a, b) => a + b, 0);
+            const unit = (c.height - 80) / total;
+            let y = 40;
+            const counts = [14, 14, 14, 13, 12, 10];
+            rows.forEach((h, i) => {
+                const n = counts[i];
+                const gap = 14;
+                const keyW = (kw - gap * (n - 1)) / n;
+                for (let k = 0; k < n; k++) {
+                    let w = keyW, x = kx + k * (keyW + gap);
+                    if (i === 5) { // bottom row: wide space bar in the middle
+                        const widths = [1, 1, 1, 1.3, 5.2, 1.3, 1, 1, 1, 1];
+                        const sum = widths.reduce((a, b) => a + b, 0);
+                        const u = (kw - gap * (n - 1)) / sum;
+                        x = kx + widths.slice(0, k).reduce((a, b) => a + b, 0) * u + k * gap;
+                        w = widths[k] * u;
+                    }
+                    const r = 14;
+                    g.fillStyle = '#18181b';
+                    g.beginPath(); g.roundRect(x, y + 4, w, h * unit - 18, r); g.fill();
+                    g.fillStyle = '#060607';
+                    g.beginPath(); g.roundRect(x, y, w, h * unit - 18, r); g.fill();
+                }
+                y += h * unit;
+            });
+            const t = new THREE.CanvasTexture(c);
+            t.colorSpace = THREE.SRGBColorSpace;
+            t.anisotropy = 8;
+            return t;
+        }
+
+        // Soft diagonal glare for the screen glass
+        function glareTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024; c.height = 640;
+            const g = c.getContext('2d');
+            const grad = g.createLinearGradient(0, 0, c.width, c.height);
+            grad.addColorStop(0.0, 'rgba(255,255,255,0.10)');
+            grad.addColorStop(0.35, 'rgba(255,255,255,0.03)');
+            grad.addColorStop(0.36, 'rgba(255,255,255,0.0)');
+            grad.addColorStop(1.0, 'rgba(255,255,255,0.0)');
+            g.fillStyle = grad;
+            g.fillRect(0, 0, c.width, c.height);
+            return new THREE.CanvasTexture(c);
+        }
+
+        // --- Model (centimetres, MacBook Pro 14") ---------------------------------------
+        const BW = 31.3, BD = 22.1, BH = 0.72;   // base
+        const LW = 31.3, LH = 21.9, LT = 0.5;    // lid
+        const laptop = new THREE.Group();
+        scene.add(laptop);
+
+        // Base: hinge along the back edge (z = -BD/2), front edge toward +z
+        const base = new THREE.Mesh(new RoundedBoxGeometry(BW, BH, BD, 6, 0.32), aluminium);
+        base.position.y = BH / 2;
+        laptop.add(base);
+
+        const keyboard = new THREE.Mesh(new THREE.PlaneGeometry(BW - 1.6, 11.6), new THREE.MeshStandardMaterial({
+            map: keyboardTexture(), roughness: 0.7, metalness: 0.1
+        }));
+        keyboard.rotation.x = -Math.PI / 2;
+        keyboard.position.set(0, BH + 0.005, -BD / 2 + 1.4 + 5.8);
+        laptop.add(keyboard);
+
+        const trackpad = new THREE.Mesh(roundedRect(15.2, 9.6, 0.6), new THREE.MeshPhysicalMaterial({
+            color: 0x34353b, metalness: 0.45, roughness: 0.16, clearcoat: 0.9,
+            envMapIntensity: 1.9
+        }));
+        trackpad.rotation.x = -Math.PI / 2;
+        trackpad.position.set(0, BH + 0.006, BD / 2 - 1.1 - 4.8);
+        laptop.add(trackpad);
+
+        const hinge = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, BW - 7, 32), darkPlastic);
+        hinge.rotation.z = Math.PI / 2;
+        hinge.position.set(0, BH + 0.05, -BD / 2 + 0.25);
+        laptop.add(hinge);
+
+        // Lid pivots at the hinge; tilted back ~15deg from upright
+        const lidPivot = new THREE.Group();
+        lidPivot.position.set(0, BH + 0.1, -BD / 2 + 0.25);
+        lidPivot.rotation.x = -0.27;
+        laptop.add(lidPivot);
+
+        // Lid: a rounded rectangle (corner radius LR, like a real MacBook lid)
+        // extruded to the lid's thickness with softly bevelled edges. Its front
+        // face sits at z = 0 in the pivot.
+        const LR = 0.9, bevel = 0.08;
+        const lidGeo = new THREE.ExtrudeGeometry(roundedRectShape(LW - 2 * bevel, LH - 2 * bevel, LR - bevel), {
+            depth: LT - 2 * bevel, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel,
+            bevelSegments: 4, curveSegments: 32
+        });
+        const lid = new THREE.Mesh(lidGeo, aluminium);
+        lid.position.set(0, LH / 2, -(LT - bevel));
+        lidPivot.add(lid);
+
+        // Glass covers the whole front, its corners rounded like the lid's
+        // (a mismatch shows slivers of aluminium in the corners)
+        const bezel = new THREE.Mesh(roundedRect(LW - 0.04, LH - 0.04, LR - 0.02), bezelGlass);
+        bezel.position.set(0, LH / 2, 0.003);
+        lidPivot.add(bezel);
+
+        // Display area. The screen image is composed on a canvas: a white
+        // band at the top (clears the camera notch, like the menu bar on a real
+        // Mac) and the screenshot below it at full width; the page's own white
+        // background fills any space left at the bottom.
+        const DW = LW - 1.1, DH = LH - 1.75;
+        const padTop = Number(params.get('padTop') || 0.8); // cm of white above the page
+        const shot = await new THREE.ImageLoader().loadAsync(screenSrc);
+        const screenCanvas = document.createElement('canvas');
+        screenCanvas.width = 2400;
+        screenCanvas.height = Math.round(screenCanvas.width * DH / DW);
+        const sg = screenCanvas.getContext('2d');
+        sg.fillStyle = '#ffffff';
+        sg.fillRect(0, 0, screenCanvas.width, screenCanvas.height);
+        const top = Math.round(screenCanvas.height * padTop / DH);
+        sg.drawImage(shot, 0, top, screenCanvas.width, shot.height * screenCanvas.width / shot.width);
+        const screenTex = new THREE.CanvasTexture(screenCanvas);
+        screenTex.colorSpace = THREE.SRGBColorSpace;
+        screenTex.anisotropy = 16;
+        const display = new THREE.Mesh(roundedRect(DW, DH, 0.12), new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false }));
+        display.position.set(0, 0.55 + DH / 2, 0.006);
+        lidPivot.add(display);
+
+        const notch = new THREE.Mesh(roundedRect(3.2, 0.62, 0.25), new THREE.MeshBasicMaterial({ color: 0x050506 }));
+        notch.position.set(0, 0.55 + DH - 0.31 + 0.12, 0.008);
+        lidPivot.add(notch);
+
+        // Rounded like the glass, so the glare can't show past the lid's corners
+        const glare = new THREE.Mesh(roundedRect(LW - 0.3, LH - 0.3, LR - 0.15), new THREE.MeshBasicMaterial({
+            map: glareTexture(), transparent: true, depthWrite: false, toneMapped: false
+        }));
+        glare.position.set(0, LH / 2, 0.01);
+        lidPivot.add(glare);
+
+        // --- Pose & camera ----------------------------------------------------------------
+        laptop.rotation.y = -0.24;   // turned so the right side recedes, like the showcase
+        laptop.rotation.z = -0.09;   // a slight clockwise lean
+
+        const camera = new THREE.PerspectiveCamera(20, W / H, 1, 500);
+        camera.position.set(0, 22, 120);
+        camera.lookAt(0, 9, 0);
+
+        renderer.render(scene, camera);
+
+        // --- Export: trim transparent margins, output WebP --------------------------------
+        const src = renderer.domElement;
+        const probe = document.createElement('canvas');
+        probe.width = W; probe.height = H;
+        const pg = probe.getContext('2d');
+        pg.drawImage(src, 0, 0);
+        const data = pg.getImageData(0, 0, W, H).data;
+        let minX = W, minY = H, maxX = 0, maxY = 0;
+        for (let y = 0; y < H; y++) {
+            for (let x = 0; x < W; x++) {
+                if (data[(y * W + x) * 4 + 3] > 8) {
+                    if (x < minX) minX = x; if (x > maxX) maxX = x;
+                    if (y < minY) minY = y; if (y > maxY) maxY = y;
+                }
+            }
+        }
+        const pad = 6;
+        minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
+        maxX = Math.min(W - 1, maxX + pad); maxY = Math.min(H - 1, maxY + pad);
+        const out = document.createElement('canvas');
+        out.width = maxX - minX + 1; out.height = maxY - minY + 1;
+        out.getContext('2d').drawImage(src, minX, minY, out.width, out.height, 0, 0, out.width, out.height);
+        document.getElementById('out').textContent = out.toDataURL('image/webp', 0.9);
+        if (preview) {
+            out.style.cssText = 'display:block;max-width:100vw;max-height:100vh;margin:auto';
+            document.body.appendChild(out);
+        }
+        document.title = `done ${out.width}x${out.height}`;
+    </script>
+</body>
+</html>

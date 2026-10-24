@@ -14,13 +14,176 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start the homepage hero's right-to-left case study carousel
     initializeHeroCarousel();
+
+    // Case study pages: keep the nav hidden over the full-screen hero
+    initializeCaseStudyNav();
+
+    // Home page: zoom a case study up to full screen before opening it
+    initializeCaseStudyZoom();
+
+    // Case study pages: photo carousels (arrows and dots)
+    initializePhotoCarousels();
+
+    // Case study showcases: float the cards on a shared clock
+    syncCardFloat(document.documentElement);
 });
 
 /**
- * Duplicate the hero cards once so the CSS marquee (which slides the track
- * by exactly half its width) loops without a gap. The copies are hidden
- * from screen readers and the tab order. With reduced motion the row stays
- * still and can be scrolled sideways instead.
+ * The showcase cards bob on a 6s loop (csFloat). Starting that loop from the
+ * wall clock rather than from when each element appeared keeps every copy in
+ * step - the home page block, the zoom copy and the case study page - so a
+ * card never jumps when one hands over to the next.
+ */
+function syncCardFloat(scope) {
+    scope.style.setProperty('--cs-float-phase', `${-(Date.now() % 6000) / 1000}s`);
+}
+
+/**
+ * Clicking a case study showcase on the home page zooms a copy of it up to
+ * fill the window, then opens the case study page, whose hero is that same
+ * block at full screen - so the page appears to keep growing into itself.
+ * Done in script rather than with browser page transitions so it runs every
+ * time, in every browser, even when the site is opened from local files.
+ */
+function initializeCaseStudyZoom() {
+    const links = document.querySelectorAll('a.cs-showcase');
+    if (links.length === 0) return;
+
+    let zooming = false;
+
+    // Back button restores this page from cache mid-zoom: put it back
+    window.addEventListener('pageshow', (event) => {
+        if (!event.persisted) return;
+        document.querySelectorAll('.cs-zoom-clone').forEach(clone => clone.remove());
+        links.forEach(link => { link.style.visibility = ''; });
+        document.body.classList.remove('cs-zooming');
+        zooming = false;
+    });
+
+    links.forEach(link => {
+        link.addEventListener('click', (event) => {
+            // Let new-tab clicks and the like through untouched
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            if (zooming) {
+                event.preventDefault();
+                return;
+            }
+
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) return;
+
+            event.preventDefault();
+            zooming = true;
+
+            const rect = link.getBoundingClientRect();
+            const clone = link.cloneNode(true);
+            clone.classList.add('cs-zoom-clone');
+            clone.removeAttribute('id');
+            clone.setAttribute('aria-hidden', 'true');
+            clone.tabIndex = -1;
+            Object.assign(clone.style, {
+                position: 'fixed',
+                top: `${rect.top}px`,
+                left: `${rect.left}px`,
+                width: `${rect.width}px`,
+                height: `${rect.height}px`,
+                minHeight: '0',
+                maxHeight: 'none',
+                margin: '0',
+                zIndex: '1000'
+            });
+            // Keep the floating cards on the same beat as the originals
+            syncCardFloat(clone);
+
+            // The copy's images are new elements: load them now (not lazily)
+            // and only swap the copy in once they're decoded - otherwise the
+            // laptop is missing for a frame and the block flashes
+            const images = Array.from(clone.querySelectorAll('img'));
+            images.forEach(img => {
+                img.loading = 'eager';
+                img.decoding = 'sync';
+            });
+            clone.style.visibility = 'hidden';
+            document.body.appendChild(clone);
+
+            const startZoom = () => {
+                clone.style.visibility = '';
+                link.style.visibility = 'hidden';
+                document.body.classList.add('cs-zooming');
+
+                // Match the case study hero exactly: full width, small-viewport height
+                const fullHeight = CSS.supports('height', '100svh') ? '100svh' : '100vh';
+                const zoom = clone.animate([
+                    {
+                        top: `${rect.top}px`,
+                        left: `${rect.left}px`,
+                        width: `${rect.width}px`,
+                        height: `${rect.height}px`,
+                        borderRadius: getComputedStyle(link).borderRadius,
+                        boxShadow: getComputedStyle(link).boxShadow
+                    },
+                    {
+                        top: '0px',
+                        left: '0px',
+                        // clientWidth leaves out a visible scrollbar, as the hero does
+                        width: `${document.documentElement.clientWidth}px`,
+                        height: fullHeight,
+                        borderRadius: '0px',
+                        boxShadow: 'none'
+                    }
+                ], { duration: 850, easing: 'cubic-bezier(0.65, 0, 0.25, 1)', fill: 'forwards' });
+
+                const open = () => { window.location.href = link.href; };
+                zoom.finished.then(open, open);
+            };
+
+            // Start as soon as the images are decoded (both the swap and the
+            // first animation step then land in the same frame), or after
+            // 150ms at the latest so a slow decode can't hold the click up
+            let started = false;
+            const startOnce = () => {
+                if (started) return;
+                started = true;
+                startZoom();
+            };
+            Promise.all(images.map(img => img.decode().catch(() => {}))).then(startOnce);
+            setTimeout(startOnce, 150);
+        });
+    });
+}
+
+/**
+ * On a case study page the hero fills the screen with no nav. Once most of
+ * it has scrolled away (the visitor has reached the details), add
+ * .cs-nav-visible to <body> so the CSS eases the nav in; scrolling back up
+ * to the hero hides it again.
+ */
+function initializeCaseStudyNav() {
+    // The full-screen block, not the whole hero (which also has the fade
+    // strip below it), so the nav appears at the same point as before
+    const hero = document.querySelector('.cs-hero .cs-showcase');
+    if (!hero) return;
+
+    if (!('IntersectionObserver' in window)) {
+        document.body.classList.add('cs-nav-visible');
+        return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+        document.body.classList.toggle('cs-nav-visible', entry.intersectionRatio < 0.35);
+    }, { threshold: [0, 0.35, 1] });
+
+    observer.observe(hero);
+}
+
+/**
+ * Copy the hero cards so the CSS marquee (which slides the track by exactly
+ * half its width) loops without a gap: first repeat them until one half is
+ * wider than the screen (with only a few cards, one set is not), then
+ * double the lot. --marquee-cards tells the CSS how many cards are in a
+ * half, so the speed stays the same. The copies are hidden from screen
+ * readers and the tab order. With reduced motion the row stays still and
+ * can be scrolled sideways instead.
  */
 function initializeHeroCarousel() {
     const track = document.querySelector('.hero-cards');
@@ -29,7 +192,8 @@ function initializeHeroCarousel() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    Array.from(track.children).forEach(card => {
+    const originals = Array.from(track.children);
+    const appendCopies = (cards) => cards.forEach(card => {
         const copy = card.cloneNode(true);
         copy.setAttribute('aria-hidden', 'true');
         copy.setAttribute('tabindex', '-1');
@@ -37,7 +201,69 @@ function initializeHeroCarousel() {
         track.appendChild(copy);
     });
 
+    // The screen, not the window, so making the window wider later can't open a gap
+    const widest = Math.max(window.screen.width, track.parentElement.clientWidth);
+    const sets = Math.max(1, Math.ceil(widest / track.scrollWidth));
+    for (let i = 1; i < sets; i++) appendCopies(originals);
+
+    const half = Array.from(track.children);
+    appendCopies(half);
+
+    track.style.setProperty('--marquee-cards', half.length);
     track.classList.add('is-looping');
+}
+
+/**
+ * Photo carousels on case study pages ([data-carousel]). The slides sit in
+ * a horizontally scroll-snapping track, so swiping works on its own; this
+ * adds dots, wires up the arrow buttons and the arrow keys, and keeps the
+ * dots and arrows in step with whichever slide is showing. With a single
+ * photo the controls stay hidden.
+ */
+function initializePhotoCarousels() {
+    document.querySelectorAll('[data-carousel]').forEach(carousel => {
+        const track = carousel.querySelector('.cs-carousel-track');
+        const slides = Array.from(track.children);
+        if (slides.length < 2) return;
+
+        carousel.classList.add('has-controls');
+        const prev = carousel.querySelector('.cs-carousel-btn--prev');
+        const next = carousel.querySelector('.cs-carousel-btn--next');
+        const dotsBox = carousel.querySelector('.cs-carousel-dots');
+        const dotLabel = dotsBox.dataset.label || 'Photo';
+
+        const dots = slides.map((slide, i) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'cs-carousel-dot';
+            dot.setAttribute('aria-label', `${dotLabel} ${i + 1}`);
+            dot.addEventListener('click', () => goTo(i));
+            dotsBox.appendChild(dot);
+            return dot;
+        });
+
+        const current = () => Math.round(track.scrollLeft / track.clientWidth);
+        const goTo = (i) => {
+            const index = Math.max(0, Math.min(slides.length - 1, i));
+            track.scrollTo({ left: index * track.clientWidth, behavior: 'smooth' });
+        };
+
+        const update = () => {
+            const i = current();
+            dots.forEach((dot, n) => dot.setAttribute('aria-current', n === i ? 'true' : 'false'));
+            prev.disabled = i === 0;
+            next.disabled = i === slides.length - 1;
+        };
+
+        prev.addEventListener('click', () => goTo(current() - 1));
+        next.addEventListener('click', () => goTo(current() + 1));
+        track.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(current() - 1); }
+            if (event.key === 'ArrowRight') { event.preventDefault(); goTo(current() + 1); }
+        });
+        track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+        update();
+    });
 }
 
 /**
@@ -80,10 +306,6 @@ function handleNavClick(clickedBtn, allBtns) {
         case 'home':
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            break;
-        case 'about':
-            // Placeholder for about section navigation
-            console.log('Navigate to About Us');
             break;
         case 'contact':
             // Scroll to contact section
@@ -485,9 +707,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // if (imgEl) imgEl.src = '';
 
         if (!fromHistory) {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('project');
-            history.pushState({}, '', url);
+            if (history.state && 'project' in history.state) {
+                // We pushed this entry when opening - step back off it, so
+                // pressing Back afterwards doesn't reopen the modal
+                history.back();
+            } else {
+                // Opened from a ?project= link: just drop the parameter
+                const url = new URL(window.location.href);
+                url.searchParams.delete('project');
+                history.replaceState({}, '', url);
+            }
         }
     }
 

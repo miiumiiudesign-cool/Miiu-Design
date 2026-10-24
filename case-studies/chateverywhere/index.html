@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="淼渺設計為 ChatEverywhere 設計並建置官方網站，展示網頁應用程式的核心功能、每週更新與線上講座。">
+    <meta name="robots" content="index,follow">
+    <meta property="og:title" content="ChatEverywhere 官方網站｜案例研究｜淼渺設計有限公司">
+    <meta property="og:description" content="淼渺設計為 ChatEverywhere 設計並建置官方網站，展示網頁應用程式的核心功能、每週更新與線上講座。">
+    <meta property="og:url" content="https://miiudesign.com/case-studies/chateverywhere/">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://miiudesign.com/Case-Study/chateverywhere-site.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://miiudesign.com/Case-Study/chateverywhere-site.jpg">
+    <link rel="icon" type="image/png" href="../../Miiu-Design-Logo-blue-square.png">
+    <link rel="apple-touch-icon" href="../../Miiu-Design-Logo-blue-square.png">
+    <link rel="canonical" href="https://miiudesign.com/case-studies/chateverywhere/">
+    <title>ChatEverywhere 官方網站｜案例研究｜淼渺設計有限公司</title>
+    <!-- Hero laptop: fetch it first and decode it before the first paint, so the page
+         the home page zooms into never shows a frame without it -->
+    <link rel="preload" as="image" href="../../Case-Study/chateverywhere-laptop.webp" fetchpriority="high">
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+<body class="cs-page">
+    <!-- Desktop Left Navigation Rail -->
+    <nav class="desktop-nav" aria-label="Main navigation">
+        <!-- Company logo: part of the fixed rail, so it stays put while the page scrolls -->
+        <img src="../../Miu-Design-Logo.png" alt="Miiu Design Logo" class="nav-logo" />
+        <div class="nav-center-group">
+            <button class="nav-btn" data-nav="home" aria-label="Home" onclick="location.href='../../index.html'" data-href="../../index.html">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span class="nav-tooltip">主頁</span>
+            </button>
+            <!-- HIDDEN: Our Projects
+            <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='../../projects/index.html'" data-href="../../projects/index.html">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+                </svg>
+                <span class="nav-tooltip">我們的案例</span>
+            </button>
+            -->
+            <button class="nav-btn" data-nav="about" aria-label="About Us" onclick="location.href='../../about.html'" data-href="../../about.html">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                <span class="nav-tooltip">關於我們</span>
+            </button>
+            <button class="nav-btn" data-nav="contact" aria-label="Contact Us" onclick="location.href='../../contactus/index.html'" data-href="../../contactus/index.html">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                <span class="nav-tooltip">聯絡我們</span>
+            </button>
+        </div>
+        <button class="nav-btn nav-bottom" data-nav="language" aria-label="Language" onclick="location.href='https://miiudesign.com/en/case-studies/chateverywhere/'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/>
+            </svg>
+            <span class="nav-tooltip">English</span>
+        </button>
+    </nav>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav" aria-label="Main navigation">
+        <button class="nav-btn" data-nav="about" aria-label="About Us" onclick="location.href='../../about.html'" data-href="../../about.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+        </button>
+        <!-- HIDDEN: Our Projects
+        <button class="nav-btn" data-nav="projects" aria-label="Our Projects" onclick="location.href='../../projects/index.html'" data-href="../../projects/index.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+            </svg>
+        </button>
+        -->
+        <button class="nav-btn" data-nav="home" aria-label="Home" onclick="location.href='../../index.html'" data-href="../../index.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </button>
+        <button class="nav-btn" data-nav="contact" aria-label="Contact Us" onclick="location.href='../../contactus/index.html'" data-href="../../contactus/index.html">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+        </button>
+        <button class="nav-btn" data-nav="language" aria-label="Language" onclick="location.href='https://miiudesign.com/en/case-studies/chateverywhere/'" data-href="https://miiudesign.com/en/case-studies/chateverywhere/">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Full-screen hero: the same showcase as case study #2 on the home page, which zooms
+         up into it when clicked; the side nav stays hidden until the visitor scrolls down to
+         the details (script.js) -->
+    <header class="cs-hero">
+        <div class="cs-showcase">
+            <h1 class="visually-hidden">案例研究 #2 – ChatEverywhere 官方網站</h1>
+            <div class="cs-meta">
+                <div class="cs-meta-item"><span class="cs-meta-label">專案</span><span class="cs-meta-value">ChatEverywhere</span></div>
+                <div class="cs-meta-item"><span class="cs-meta-label">參與</span><span class="cs-meta-value">網站設計・開發</span></div>
+                <div class="cs-meta-item"><span class="cs-meta-label">服務</span><span class="cs-meta-value">官方網站</span></div>
+                <div class="cs-meta-item cs-meta-item--push"><span class="cs-meta-label">工具</span><span class="cs-meta-value"><span class="cs-tool" aria-label="Figma"><svg width="11" height="16" viewBox="0 0 38 57" aria-hidden="true"><path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/><path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z"/><path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z"/><path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/><path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg></span><span class="cs-tool" aria-label="Framer"><svg width="11" height="16" viewBox="0 0 14 21" aria-hidden="true"><path fill="#fff" d="M0 0h14v7H7z"/><path fill="#fff" d="M0 7h7l7 7H0z"/><path fill="#ccc" d="M0 14h7v7z"/></svg></span></span></div>
+                <div class="cs-meta-item"><span class="cs-meta-label">年份</span><span class="cs-meta-value">2025–2026</span></div>
+            </div>
+            <div class="cs-word" aria-hidden="true">Web Design</div>
+            <div class="cs-platforms" aria-hidden="true"><span></span><span></span></div>
+            <div class="cs-laptop"><img class="cs-laptop-render" src="../../Case-Study/chateverywhere-laptop.webp" alt="ChatEverywhere 官方網站首頁" width="1748" height="1265" decoding="sync" fetchpriority="high"></div>
+            <div class="cs-card cs-card--1">
+                <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg></span>
+                <span><span class="cs-card-title">功能介紹</span><span class="cs-card-desc">一眼看懂核心功能</span></span>
+            </div>
+            <div class="cs-card cs-card--2">
+                <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></span>
+                <span><span class="cs-card-title">每週更新</span><span class="cs-card-desc">持續發佈最新消息</span></span>
+            </div>
+            <div class="cs-card cs-card--3">
+                <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg></span>
+                <span><span class="cs-card-title">線上講座</span><span class="cs-card-desc">宣傳與報名一站完成</span></span>
+            </div>
+            <div class="cs-card cs-card--4">
+                <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg></span>
+                <span><span class="cs-card-title">響應式設計</span><span class="cs-card-desc">手機、平板、桌面皆適用</span></span>
+            </div>
+            <div class="cs-caption" aria-hidden="true">ChatEverywhere <strong>官方網站</strong></div>
+            <div class="cs-credit" aria-hidden="true">淼渺設計 製作</div>
+            <a class="cs-cta cs-scroll-cue" href="#cs-overview">向下查看詳情 <span aria-hidden="true">↓</span></a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Overview (draft copy - edit freely) -->
+        <section class="cs-detail" id="cs-overview" aria-labelledby="cs-overview-title">
+            <div class="cs-detail-grid">
+                <div>
+                    <p class="cs-detail-kicker">案例研究 #2</p>
+                    <h2 id="cs-overview-title">為 ChatEverywhere 打造清晰、現代的官方網站</h2>
+                    <p>我們為 ChatEverywhere 設計並建置清晰、現代的官方網站，用來展示他們的網頁應用程式、突顯核心功能、分享每週更新，並宣傳線上講座。網站以老師為主要讀者，透過簡潔的版面與清楚的行動按鈕，讓學校更容易了解並開始使用 ChatEverywhere。</p>
+                    <a class="cta-btn" href="https://intro.chateverywhere.app/" target="_blank" rel="noopener">瀏覽網站 ↗</a>
+                </div>
+                <dl class="cs-detail-facts">
+                    <div><dt>客戶</dt><dd>ChatEverywhere</dd></div>
+                    <div><dt>服務</dt><dd>官方網站設計與建置</dd></div>
+                    <div><dt>範疇</dt><dd>UI 設計、網站開發、持續更新</dd></div>
+                    <div><dt>工具</dt><dd>Figma、Framer</dd></div>
+                    <div><dt>年份</dt><dd>2025–2026</dd></div>
+                    <div><dt>網站</dt><dd><a href="https://intro.chateverywhere.app/" target="_blank" rel="noopener">intro.chateverywhere.app</a></dd></div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- What we did -->
+        <section class="cs-detail" aria-labelledby="cs-features-title">
+            <h2 id="cs-features-title">我們做了什麼</h2>
+            <div class="cs-features">
+                <div class="cs-feature" style="--cs-card-glow: #f59e0b;">
+                    <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg></span>
+                    <h3>功能介紹</h3>
+                    <p>清楚呈現網頁應用程式的核心功能，讓老師一眼看懂能用來做什麼。</p>
+                </div>
+                <div class="cs-feature" style="--cs-card-glow: #a855f7;">
+                    <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></span>
+                    <h3>每週更新</h3>
+                    <p>建立容易維護的版面，方便團隊持續發佈每週更新與新功能。</p>
+                </div>
+                <div class="cs-feature" style="--cs-card-glow: #5b5bf0;">
+                    <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg></span>
+                    <h3>線上講座</h3>
+                    <p>為線上講座設計宣傳與報名區塊，吸引更多老師參與。</p>
+                </div>
+                <div class="cs-feature" style="--cs-card-glow: #ef4444;">
+                    <span class="cs-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg></span>
+                    <h3>響應式設計</h3>
+                    <p>在手機、平板與桌面上都提供一致、易讀的瀏覽體驗。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Full screenshot -->
+        <section class="cs-detail" aria-label="網站首頁">
+            <div class="cs-browser">
+                <div class="cs-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                <img src="../../Case-Study/chateverywhere-site.jpg" alt="ChatEverywhere 官方網站首頁截圖" loading="lazy">
+            </div>
+        </section>
+
+        <nav class="cs-detail cs-next" aria-label="返回所有案例">
+            <a class="cs-back" href="../../index.html#case-studies-title">← 返回所有案例</a>
+            <a class="cta-btn" href="../../contactus/index.html">和我們聊聊你的專案</a>
+        </nav>
+    </main>
+
+    <script src="../../script.js"></script>
+</body>
+</html>
